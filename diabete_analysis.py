@@ -1,6 +1,5 @@
 from numpy import number
 import pandas as pd
-from pyrsistent import v
 
 
 # import the data contained in csv downloaded from Kaggle in a dataframe
@@ -26,4 +25,3 @@ for column in list_of_columns_with_null_values:
     print('\nCOLUMN: ' + column)
     print('VALUES: ', df_diabetes[column].value_counts())
 
-    
