@@ -1,5 +1,5 @@
-from numpy import number
 import pandas as pd
+import numpy as np
 import streamlit as st
 
 # settings for streamlit page
@@ -32,9 +32,16 @@ st.write(
 
 
 # dictionary contain the meaning of each columns
-meaning_of_columns = {'Age':'Age of the people', 'Gender': 'Sex of the people', 'Family_Diabates':'', 'highBP':'', 'PhysicallyActive': 'It indicates how much physical activity a person does',
-                       'BMI':'Body mass (fat) index', 'Smoking': 'It denotes if a person is a smoker or not', 'Alcohol':'', 'Sleep':'', 'Soundsleep':'', 'RegularMedicine':'',
-                       'JunkFood':'','Stress':'', 'BPLevel':'', 'Pregancies':'', 'Pdiabetes':'', 'UriationFreq': '', 'Diabetic':''}
+meaning_of_columns = {'Age':'Age of the participants', 'Gender': 'Sex of the participants', 
+                        'Family_Diabetes':'It indicates if there were diabetes cases in the family of the participants.', 
+                        'highBP':'It indicates if a participant was diagnosed with high blook pressure', 'PhysicallyActive': 'It indicates how much physical activity a participant does',
+                       'BMI':'Body mass (fat) index of the participant', 'Smoking': "It denotes if a participant smokes or doesn't", 'Alcohol':'It indicates if a participant consumes alcohol or not', 
+                       'Sleep':'It indicates how much a participant sleeps', 'Soundsleep':'It indicates the amount of hours of sound sleep', 
+                       'RegularMedicine':'It indicates if a participant takes medicines regularly or not',
+                       'JunkFood':'It indicates if a participant consumes a junk food or not','Stress':'It indicates the level of stress of the participants', 
+                       'BPLevel':'Blood pressure level of participants', 'Pregancies':'Number of pregnanancis for each participant', 
+                       'Pdiabetes':'Gestation diabetes', 
+                       'UriationFreq': 'Frequency of urination', 'Diabetic':'It indicates if a participant is diabetic or not'}
 
 # creation of two columns in order to have the selectbox and the meaning of the selected column side by side
 col1, col2 = st.beta_columns(2)
@@ -45,3 +52,17 @@ with col2:
         if key == choosen_column:
             st.text("")
             st.write("*" + meaning_of_columns[key] + '*')
+            if df_diabetes.dtypes[key] == np.object:
+                list_of_possible_values = list(set(df_diabetes[key]))
+                st.write('The selected column can have the following values:')
+                for value in list_of_possible_values:
+                    st.markdown("- " + str(value))
+            if df_diabetes.dtypes[key] != np.object:
+                minimum_value = df_diabetes[key].min()
+                maximum_value = df_diabetes[key].max()
+                medium_value = round(df_diabetes[key].mean(),2)
+                st.write('The selected column contains numeric values with the following properties:')
+                st.markdown("- Minimum value: " + str(minimum_value))
+                st.markdown("- Maximum value: " + str(maximum_value))
+                st.markdown("- Medium value: " + str(medium_value))
+
