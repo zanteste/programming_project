@@ -44,25 +44,35 @@ meaning_of_columns = {'Age':'Age of the participants', 'Gender': 'Sex of the par
                        'UriationFreq': 'Frequency of urination', 'Diabetic':'It indicates if a participant is diabetic or not'}
 
 # creation of two columns in order to have the selectbox and the meaning of the selected column side by side
-col1, col2 = st.beta_columns(2)
-with col1:
-    choosen_column = st.selectbox('',columns_list)
-with col2:
-    for key in meaning_of_columns:
-        if key == choosen_column:
-            st.text("")
-            st.write("*" + meaning_of_columns[key] + '*')
-            if df_diabetes.dtypes[key] == np.object:
-                list_of_possible_values = list(set(df_diabetes[key]))
-                st.write('The selected column can have the following values:')
-                for value in list_of_possible_values:
-                    st.markdown("- " + str(value))
-            if df_diabetes.dtypes[key] != np.object:
-                minimum_value = df_diabetes[key].min()
-                maximum_value = df_diabetes[key].max()
-                medium_value = round(df_diabetes[key].mean(),2)
-                st.write('The selected column contains numeric values with the following properties:')
-                st.markdown("- Minimum value: " + str(minimum_value))
-                st.markdown("- Maximum value: " + str(maximum_value))
-                st.markdown("- Medium value: " + str(medium_value))
+
+with st.beta_expander('Get info about columns'):
+    col1, col2 = st.beta_columns(2)
+    with col1:
+        choosen_column = st.selectbox('',columns_list)
+    with col2:
+        for key in meaning_of_columns:
+            if key == choosen_column:
+                st.text("")
+                st.write("*" + meaning_of_columns[key] + '*')
+                if key == 'Pregancies':
+                    list_of_possible_values = list(set(df_diabetes[key]))
+                    st.write('This column is a numerical column.'+ 
+                    ' Altough, the selected column can be considered as categorical since it can have only four values.')
+                    st.write('So, the selected column can have the following values:')
+                    for value in list_of_possible_values:
+                        st.markdown("- " + str(value))
+                if df_diabetes.dtypes[key] == np.object:
+                    list_of_possible_values = list(set(df_diabetes[key]))
+                    st.write('The selected column can have the following values:')
+                    for value in list_of_possible_values:
+                        st.markdown("- " + str(value))
+                if df_diabetes.dtypes[key] != np.object:
+                    minimum_value = df_diabetes[key].min()
+                    maximum_value = df_diabetes[key].max()
+                    medium_value = round(df_diabetes[key].mean(),2)
+                    st.write('The selected column contains numeric values with the following properties:')
+                    st.markdown("- Minimum value: " + str(minimum_value))
+                    st.markdown("- Maximum value: " + str(maximum_value))
+                    st.markdown("- Medium value: " + str(medium_value))
+                
 
