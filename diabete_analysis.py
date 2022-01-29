@@ -5,7 +5,7 @@ import numpy as np
 import streamlit as st
 import matplotlib.pyplot as plt
 
-from dashboard_functions import text_for_nan_cleaning
+from dashboard_functions import replacing_null_values, text_for_nan_cleaning
 
 # settings for streamlit page
 st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto")
@@ -53,6 +53,9 @@ st.write("While browsing the data, it has been discovered that there were some n
 " In particular the null values were in the following columns: " + string_columns_with_nan + ". " + 
 " \n If you are interested in the cleaning of the null values click the box below.")
 
+# create copy of df_diabetes before replacing null values in order to show info about nan values
+df_diabets_with_nan = df_diabetes.copy()
+df_diabetes = replacing_null_values(df_diabetes)
 
 # Expander for getting information about how the null values have been treated
 with st.beta_expander('Get info about cleaning of null values'):

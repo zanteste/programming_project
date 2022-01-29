@@ -18,6 +18,8 @@ def replacing_null_values(df_diabetes):
     # remove the row that has nan value in the column Diabetic
     df_diabetes = df_diabetes[df_diabetes.Diabetic.notnull()]
 
+    return df_diabetes
+
 
 # functions to describe how the null values were replaced in the 4 columns that presented that type of value
 def text_for_nan_cleaning(nan_column):
