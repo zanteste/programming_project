@@ -5,7 +5,7 @@ import numpy as np
 import streamlit as st
 import matplotlib.pyplot as plt
 
-from dashboard_functions import replacing_null_values, text_for_nan_cleaning
+from dashboard_functions import datacleaning, replacing_null_values, text_for_nan_cleaning
 
 # settings for streamlit page
 st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto")
@@ -85,7 +85,31 @@ with st.beta_expander('Get info about cleaning of null values'):
 st.write('Once null values were replaced, it became necessary to correct some errors in the data. In particular, errors have been found in the following columns:' +
 ' *RegularMedicine*, *BPLevel*, *Pdiabetes* and *Diabetic*. If you want to discover what type of errors have been found and how they have been managed click the box below.')
 
-# Expander for getting information about how errors have been handled
+# create copy of df_diabetes before data cleaning in order to show why data cleaning is necessary
+df_diabetes_no_datacleaning = df_diabetes.copy()
+# data cleaning
+df_diabetes = datacleaning(df_diabetes)
+
+
+# list that contains the name of columns for which data cleaning is necessary
+columns_for_data_cleaning = ['RegularMedicine', 'BPLevel', 'Pdiabetes', 'Diabetic']
+
+# Expander for getting information about how errors have been handled (Data Cleaning)
+with st.beta_expander('Get info about how errors have been handled'):
+    choosen_column = st.selectbox('', columns_for_data_cleaning)
+    list_of_original_values = df_diabetes_no_datacleaning[choosen_column].value_counts().index.to_list()
+    list_of_values_after_data_cleaning = df_diabetes[choosen_column].value_counts().index.to_list()
+    if choosen_column == 'RegularMedicine':
+        st.write('In the original dataset, the *' + choosen_column + '* had the following values: ' )
+        for val in list_of_original_values:
+            st.markdown('- ' + str(val))
+        st.write("It's possible to see that there were some rows with value *'o'* instead of *'no'*. " + 
+        "So, data cleaning operations for the selected column had the goal to substitute the *'o'* values with the expected value.")
+        st.write('Once the data have been cleaned, the column *' + choosen_column + '* has the following values, as described in the pdf document:' )
+        for val in list_of_values_after_data_cleaning:
+            st.markdown('- ' + str(val))
+
+
 
                 
 
