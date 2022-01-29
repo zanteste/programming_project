@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 import matplotlib.pyplot as plt
+import base64
 
 from dashboard_functions import datacleaning, replacing_null_values, text_for_nan_cleaning
 
@@ -84,7 +85,16 @@ with st.beta_expander('Get info about cleaning of null values'):
 
 st.write('Once null values were replaced, it became necessary to correct some errors in the data. In particular, errors have been found in the following columns:' +
 ' *RegularMedicine*, *BPLevel*, *Pdiabetes* and *Diabetic*. If you want to discover what type of errors have been found and how they have been managed click the box below.')
+st.write("All changes to the original dataset have been made according to  what is defined in the pdf visible by clicking on 'Show pdf' (at page 6 and 7)" +
+        "This pdf was written by *Neha Prerna Tigga* and *Shruti Garg*.")
 
+if st.checkbox("Show PDF Document"):
+        def show_pdf(file_path):
+            with open(file_path,"rb") as f:
+                  base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+            pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf">'
+            st.markdown(pdf_display, unsafe_allow_html=True)
+        st.write(show_pdf("1-s2.0-S1877050920308024-main.pdf"))
 # create copy of df_diabetes before data cleaning in order to show why data cleaning is necessary
 df_diabetes_no_datacleaning = df_diabetes.copy()
 # data cleaning
