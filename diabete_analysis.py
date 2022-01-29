@@ -55,6 +55,7 @@ st.write("While browsing the data, it has been discovered that there were some n
 
 # create copy of df_diabetes before replacing null values in order to show info about nan values
 df_diabets_with_nan = df_diabetes.copy()
+# replacing null values in the original dataset df_diabetes
 df_diabetes = replacing_null_values(df_diabetes)
 
 # Expander for getting information about how the null values have been treated
@@ -65,16 +66,18 @@ with st.beta_expander('Get info about cleaning of null values'):
     with col2:
         for nan_col in columns_with_nan:
             if nan_col == choosen_column_with_nan:
-                number_of_nan_values= df_diabetes[nan_col].isnull().sum()
+                number_of_nan_values= df_diabets_with_nan[nan_col].isnull().sum()
                 st.write(' \n ' + str(number_of_nan_values) + ' null values in the selected column.')
                 text_for_nan_cleaning(nan_col)
                 if nan_col == 'BMI':
+                    BMI_mode_value = df_diabetes[nan_col].mode()[0]
+                    st.write('The mode value of BMI column is: ' + str(BMI_mode_value) + '. So the null values have been replaced with that value.')
                     if st.button('Show ' + nan_col + ' distribution'):
                         fig, ax = plt.subplots(1,1, figsize=(2,2))
-                        df_diabetes[nan_col].hist(ax=ax)
+                        df_diabets_with_nan[nan_col].hist(ax=ax)
                         st.pyplot(fig)
                 if (nan_col == 'Pregnancies') | (nan_col == 'Pdiabetes'):
-                    most_frequent_value = df_diabetes[nan_col].mode()[0]
+                    most_frequent_value = df_diabets_with_nan[nan_col].value_counts().index.to_list()[0]
                     st.write('The most frequent value in the selected columns is ' + str(most_frequent_value) + ". So all the nan values have been filled with it.") 
 
 # --------------------------------- DATA CLEANING OF ALL COLUMNS ------------------------------------
