@@ -5,6 +5,8 @@ import numpy as np
 import streamlit as st
 import matplotlib.pyplot as plt
 
+from dashboard_functions import text_for_nan_cleaning
+
 # settings for streamlit page
 st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto")
 
@@ -55,22 +57,17 @@ with st.beta_expander('Get info about cleaning of null values'):
         for nan_col in columns_with_nan:
             if nan_col == choosen_column_with_nan:
                 number_of_nan_values= df_diabetes[nan_col].isnull().sum()
-                st.write(' \n There were ' + str(number_of_nan_values) + ' null values in the selected column.')
+                st.write(' \n ' + str(number_of_nan_values) + ' null values in the selected column.')
+                text_for_nan_cleaning(nan_col)
                 if nan_col == 'BMI':
-                    st.write('Since the distribution of the values of the column called ' + nan_col + 
-                    ' is not a normal distribution, the null values were substituted with the mode value of the column.')
                     if st.button('Show ' + nan_col + ' distribution'):
                         fig, ax = plt.subplots(1,1, figsize=(2,2))
                         df_diabetes[nan_col].hist(ax=ax)
                         st.pyplot(fig)
                 if (nan_col == 'Pregnancies') | (nan_col == 'Pdiabetes'):
-                    st.write('Since, the selected columns can be considered as a categorical column with 5 (from 0 to 4) values,' + 
-                    'the null values were substitued with the most frequent value. Before doing that, it was necessary to change the type of the column.')
                     most_frequent_value = df_diabetes[nan_col].mode()[0]
                     st.write('The most frequent value in the selected columns is ' + str(most_frequent_value) + ". So all the nan values have been filled with it.") 
-                if nan_col == 'Diabetic':
-                    st.write('Since, one goal of the project presented here is to predict if a person has diabetes or not, the selected column is the target of the project. ' + 
-                    'So, the row that presented the only null value of the ' + nan_col + ' column has been removed from the dataset.')
+                    
                 
 
 
