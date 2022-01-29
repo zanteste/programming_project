@@ -99,15 +99,26 @@ with st.beta_expander('Get info about how errors have been handled'):
     choosen_column = st.selectbox('', columns_for_data_cleaning)
     list_of_original_values = df_diabetes_no_datacleaning[choosen_column].value_counts().index.to_list()
     list_of_values_after_data_cleaning = df_diabetes[choosen_column].value_counts().index.to_list()
+    st.write('In the original dataset, the *' + choosen_column + '* had the following values: ')
+    for val in list_of_original_values:
+        st.markdown('- ' + str(val))
     if choosen_column == 'RegularMedicine':
-        st.write('In the original dataset, the *' + choosen_column + '* had the following values: ' )
-        for val in list_of_original_values:
-            st.markdown('- ' + str(val))
         st.write("It's possible to see that there were some rows with value *'o'* instead of *'no'*. " + 
-        "So, data cleaning operations for the selected column had the goal to substitute the *'o'* values with the expected value.")
-        st.write('Once the data have been cleaned, the column *' + choosen_column + '* has the following values, as described in the pdf document:' )
-        for val in list_of_values_after_data_cleaning:
-            st.markdown('- ' + str(val))
+                "So, data cleaning operations for the selected column had the goal to substitute the *'o'* values with the expected value.")
+    if choosen_column == 'BPLevel':
+        st.write("It's possible to see that there were some rows with lowercase first letter and others with uppercase first letter." +
+                'Since the original data (in the PDF above) are with lowercase first letter, data cleaning operations have modified the fields with uppercase first letter.' +
+                ' Furthermore, there is a row in which the *' + choosen_column + '* column is enhanced with a space inside: that space has been removed.')
+    if choosen_column == 'Pdiabetes':
+        st.write('Accordin to the pdf, *' + choosen_column + "* column can only have two values: *'yes'* or 'no'. From the list above,"+ 
+                " it's possible to see that in the original dataset there is an unwanted value: '0'. That value has been substituted with 'no'," + 
+                "as '0' can be seen as the case in which a person has not diabetes gestation.")
+    if choosen_column == 'Diabetic':
+        st.write("It's possible to see that there are two kinds of 'no' in the original data: the reason is that there is a row with a space in it." +
+                " That space has been removed, during data cleaning operations.")
+    st.write('Once the data have been cleaned, the column *' + choosen_column + '* has the following values, as described in the pdf document:' )
+    for val in list_of_values_after_data_cleaning:
+        st.markdown('- ' + str(val))
 
 
 
