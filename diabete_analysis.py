@@ -30,6 +30,7 @@ columns_list = df_diabetes.columns.to_list()
 all_columns_except_last = ', '.join(columns_list[:-1])
 
 st.header('Data Exploration and Data Cleaning')
+
 # in the following text (st.write) the name of each column is shown
 st.write(
     'The columns of the diabetes dataset are the following: *' + all_columns_except_last + '* and *' + columns_list[len(columns_list)-1] + '*.' +
@@ -41,6 +42,9 @@ df_diabetes.rename(columns={'Pregancies':'Pregnancies', 'UriationFreq':'Urinatio
 # dataset columns in list after renaming the two columns before
 columns_list = df_diabetes.columns.to_list()
 
+
+# -------------------------- DATA CLEANING OF NULL VALUES ---------------------------
+
 # list of the dataset columns with null values inside
 columns_with_nan = df_diabetes.columns[df_diabetes.isna().any()].to_list()
 # columns with nan to an unique str, in order to concatenate with the following text
@@ -49,6 +53,8 @@ st.write("While browsing the data, it has been discovered that there were some n
 " In particular the null values were in the following columns: " + string_columns_with_nan + ". " + 
 " \n If you are interested in the cleaning of the null values click the box below.")
 
+
+# Expander for getting information about how the null values have been treated
 with st.beta_expander('Get info about cleaning of null values'):
     col1, col2 = st.beta_columns(2)
     with col1:
@@ -67,7 +73,14 @@ with st.beta_expander('Get info about cleaning of null values'):
                 if (nan_col == 'Pregnancies') | (nan_col == 'Pdiabetes'):
                     most_frequent_value = df_diabetes[nan_col].mode()[0]
                     st.write('The most frequent value in the selected columns is ' + str(most_frequent_value) + ". So all the nan values have been filled with it.") 
-                    
+
+# --------------------------------- DATA CLEANING OF ALL COLUMNS ------------------------------------
+
+st.write('Once null values were replaced, it became necessary to correct some errors in the data. In particular, errors have been found in the following columns:' +
+' *RegularMedicine*, *BPLevel*, *Pdiabetes* and *Diabetic*. If you want to discover what type of errors have been found and how they have been managed click the box below.')
+
+# Expander for getting information about how errors have been handled
+
                 
 
 
