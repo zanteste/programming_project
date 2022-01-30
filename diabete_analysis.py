@@ -149,6 +149,7 @@ meaning_of_columns = {'Age':'Age of the participants', 'Gender': 'Sex of the par
 
 
 # creation of two columns in order to have the selectbox and the meaning of the selected column side by side
+st.write('If you are interested in learning more about the meaning of each columns and the data you can find inside of them, click the box below.')
 
 with st.beta_expander('Get info about columns'):
     col1, col2 = st.beta_columns(2)
