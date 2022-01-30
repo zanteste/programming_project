@@ -1,6 +1,8 @@
 import pandas as pd 
 import streamlit as st
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # function to replace null values in the columns BMI, Pregnancies, Pdiabetes and Diabetic
 def replacing_null_values(df_diabetes):
@@ -90,3 +92,26 @@ def get_list_of_columns_types(df_diabetes):
             types_of_col_in_dataframe.append('int64')
     
     return types_of_col_in_dataframe
+
+# function to create distribution for each column of the dataset
+def create_distribution_plot(col, df):
+    if (df[col].dtype == 'object') | (col == 'Pregnancies'):
+        df_values_in_selected_col = df[col].value_counts().to_frame().reset_index()
+        df_values_in_selected_col.columns = [col, 'Number of Participants']
+        fig = plt.figure(figsize=(10,6))
+        graph = sns.barplot(x=df_values_in_selected_col[col], y=df_values_in_selected_col['Number of Participants'], palette='Greens')
+        for p in graph.patches:
+            graph.annotate(format(p.get_height(), '.0f'),
+                        (p.get_x()+p.get_width() /2., p.get_height()),
+                        ha = 'center', va = 'center',
+                        xytext = (0,9),
+                        textcoords = 'offset points')
+        graph.set_title(col + ': participants distribution', size=12)
+        graph.set_xlabel('')
+        graph.set_ylabel('Number of participants', size=12)
+        st.pyplot(fig)
+    else:
+        number_of_values_in_col = len(df[col].value_counts().index.to_list())
+        fig = plt.figure(figsize=(10,6))
+        sns.distplot(df[col], color='green', bins=number_of_values_in_col)
+        st.pyplot(fig)

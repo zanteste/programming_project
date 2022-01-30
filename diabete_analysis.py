@@ -6,10 +6,9 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import base64
 
-from dashboard_functions import datacleaning, get_list_of_columns_types, replacing_null_values, text_for_description_of_columns, text_for_nan_cleaning
+from dashboard_functions import create_distribution_plot, datacleaning, get_list_of_columns_types, replacing_null_values, text_for_description_of_columns, text_for_nan_cleaning
 
 # settings for streamlit page
-st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto")
 
 
 
@@ -180,4 +179,8 @@ st.write('The type of the columns and the kind of values have been considered du
 st.write('All columns of type *object* can be considered as **categorical** features, while columns of type **float64** and **int64** are numerical features. ' +
         'The column *Pregancies* (type *float64*) during the all data analysis process is considered as a categorical value for the reasons described before.')
 
+# expander to show distribution for each column
+with st.beta_expander('Get distribution of data for each column'):
+    choosen_column = st.selectbox('Chosse a column to see its distribution', df_diabetes.columns.to_list())
+    create_distribution_plot(choosen_column, df_diabetes)
 
