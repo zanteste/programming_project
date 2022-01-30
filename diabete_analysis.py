@@ -85,8 +85,8 @@ with st.beta_expander('Get info about cleaning of null values'):
 
 st.write('Once null values were replaced, it became necessary to correct some errors in the data. In particular, errors have been found in the following columns:' +
 ' *RegularMedicine*, *BPLevel*, *Pdiabetes* and *Diabetic*. If you want to discover what type of errors have been found and how they have been managed click the box below.')
-st.write("All changes to the original dataset have been made according to  what is defined in the pdf visible by clicking on 'Show pdf' (at page 6 and 7)" +
-        "This pdf was written by *Neha Prerna Tigga* and *Shruti Garg*.")
+st.write("All changes to the original dataset have been made according to  what is defined in the pdf visible by clicking on 'Show pdf' (at page 6 (711 of the original document) and 7 (712))." +
+        " This pdf was written by *Neha Prerna Tigga* and *Shruti Garg*.")
 
 if st.checkbox("Show PDF Document"):
         def show_pdf(file_path):
