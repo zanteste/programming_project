@@ -159,7 +159,7 @@ with st.beta_expander('Get info about columns'):
         for key in meaning_of_columns:
             if key == choosen_column:
                 st.text("")
-                st.write("*" + meaning_of_columns[key] + '*')
+                st.write("*" + meaning_of_columns[key] + '*.')
                 text_for_description_of_columns(key, df_diabetes)
                 if key == 'Pregnancies':
                     st.write("From the above list, we can see that *" + choosen_column +'* is a numeric column.' + 
@@ -167,4 +167,6 @@ with st.beta_expander('Get info about columns'):
                     'as five different categories for the selected column')
 
 # ------------------------ DATA ANALYSIS ---------------------------
+st.header('Data Analysis')
+st.write('After expoliring and cleaning the original dataset, the work continued with some data analysis.')
 
