@@ -115,3 +115,25 @@ def create_distribution_plot(col, df):
         fig = plt.figure(figsize=(10,6))
         sns.distplot(df[col], color='green', bins=number_of_values_in_col)
         st.pyplot(fig)
+
+# function to create a plot to analyse the correlation between two columns
+def create_correlation_plot(col1, col_corr, df):
+    if (df[col_corr].dtype != 'object') & (col_corr != 'Pregnancies'):
+        fig = plt.figure(figsize=(10,6))
+        g = sns.violinplot(x=col1, y=col_corr, data = df)
+        g.set_title(col1 + ': correlation with column ' + col_corr, size=12)
+        g.set_xlabel('')
+        st.pyplot(fig)
+    else:
+        df_col1_groupby_with_col_corr = df.groupby([col1, col_corr]).count()['Diabetic'].to_frame().reset_index()
+        df_col1_groupby_with_col_corr.columns = [col1, col_corr, 'Number of Participants']
+        fig = plt.figure(figsize=(10,6 ))
+        g = sns.barplot(data=df_col1_groupby_with_col_corr, x=col1, y='Number of Participants', hue=col_corr)
+        for p in g.patches:
+            g.annotate(format(p.get_height(), '.0f'),
+                      (p.get_x()+p.get_width() /2., p.get_height()),
+                      ha = 'center', va = 'center',
+                      xytext = (0,9),
+                      textcoords = 'offset points',
+                      size=12)
+        st.pyplot(fig)

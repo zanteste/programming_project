@@ -6,7 +6,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import base64
 
-from dashboard_functions import create_distribution_plot, datacleaning, get_list_of_columns_types, replacing_null_values, text_for_description_of_columns, text_for_nan_cleaning
+from dashboard_functions import create_correlation_plot, create_distribution_plot, datacleaning, get_list_of_columns_types, replacing_null_values, text_for_description_of_columns, text_for_nan_cleaning
 
 # settings for streamlit page
 
@@ -182,14 +182,14 @@ st.write('All columns of type *object* can be considered as **categorical** feat
 
 # creation of a dictionary that pairs a column with others with which is interesting to analyse correlation
 correlation_dictionary = {
-    'Age': ['BMI', 'Junkfood', 'Stress', 'highBP', 'BPLevel', 'UriationFreq', 'Pdiabetes'],
-    'Gender': ['BMI', 'Alcohol', 'Smoking', 'Junkfood', 'Stress'],
-    'PhysicallyActive': ['BMI', 'Smoking', 'Alcohol', 'highBP', 'BPLevel', 'UriationFreq', 'Junkfood'],
+    'Age': ['BMI', 'JunkFood', 'Stress', 'highBP', 'BPLevel', 'UrinationFreq', 'Pdiabetes'],
+    'Gender': ['BMI', 'Alcohol', 'Smoking', 'JunkFood', 'Stress'],
+    'PhysicallyActive': ['BMI', 'Smoking', 'Alcohol', 'highBP', 'BPLevel', 'UriationFreq', 'JunkFood'],
     'BMI': ['Junkfodd', 'Alcohol', 'Smoking', 'Sleep', 'Soundsleep', 'BPLevel', 'highBP'],
     'Smoking': ['Sleep', 'SoundSleep'],
     'Alcohol': ['Sleep', 'SoundSleep'],
     'Stress': ['Alcohol', 'Smoking', 'Sleep', 'Soundsleep'],
-    'RegularMedicine': ['Age', 'BMI', 'Junkfood', 'highBP', 'BPLevel']
+    'RegularMedicine': ['Age', 'BMI', 'JunkFood', 'highBP', 'BPLevel']
 }
 
 # list with all columns that are keys of the correlation dictionary
@@ -200,7 +200,7 @@ with st.beta_expander('Get distribution of data for each column'):
     choosen_column = st.selectbox('Choose a column to see its distribution', df_diabetes.columns.to_list())
     create_distribution_plot(choosen_column, df_diabetes)
     if choosen_column in list_of_columns_with_correlation_analysis:
-        columns_for_correlation = st.selectbox('Choose a column for analyse correlation with ' + choosen_column,correlation_dictionary[choosen_column])
-
+        column_for_correlation = st.selectbox('Choose a column for analyse correlation with ' + choosen_column,correlation_dictionary[choosen_column])
+        create_correlation_plot(choosen_column, column_for_correlation, df_diabetes)
 
 
