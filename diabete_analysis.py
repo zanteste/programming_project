@@ -184,3 +184,14 @@ with st.beta_expander('Get distribution of data for each column'):
     choosen_column = st.selectbox('Chosse a column to see its distribution', df_diabetes.columns.to_list())
     create_distribution_plot(choosen_column, df_diabetes)
 
+# creation of a dictionary that pairs a column with others with which is interesting to analyse correlation
+correlation_dictionary = {
+    'Age': ['BMI', 'Junkfood', 'Stress', 'highBP', 'BPLevel', 'UriationFreq', 'Pdiabetes'],
+    'Gender': ['BMI', 'Alcohol', 'Smoking', 'Junkfood', 'Stress'],
+    'PhysicallyActive': ['BMI', 'Smoking', 'Alcohol', 'highBP', 'BPLevel', 'UriationFreq', 'Junkfood'],
+    'BMI': ['Junkfodd', 'Alcohol', 'Smoking', 'Sleep', 'Soundsleep', 'BPLevel', 'highBP'],
+    'Smoking': ['Sleep', 'SoundSleep'],
+    'Alcohol': ['Sleep', 'SoundSleep'],
+    'Stress': ['Alcohol', 'Smoking', 'Sleep', 'Soundsleep'],
+    'RegularMedicine': ['Age', 'BMI', 'Junkfood', 'highBP', 'BPLevel']
+}
