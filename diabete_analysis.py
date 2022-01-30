@@ -179,10 +179,6 @@ st.write('The type of the columns and the kind of values have been considered du
 st.write('All columns of type *object* can be considered as **categorical** features, while columns of type **float64** and **int64** are numerical features. ' +
         'The column *Pregancies* (type *float64*) during the all data analysis process is considered as a categorical value for the reasons described before.')
 
-# expander to show distribution for each column
-with st.beta_expander('Get distribution of data for each column'):
-    choosen_column = st.selectbox('Chosse a column to see its distribution', df_diabetes.columns.to_list())
-    create_distribution_plot(choosen_column, df_diabetes)
 
 # creation of a dictionary that pairs a column with others with which is interesting to analyse correlation
 correlation_dictionary = {
@@ -195,3 +191,16 @@ correlation_dictionary = {
     'Stress': ['Alcohol', 'Smoking', 'Sleep', 'Soundsleep'],
     'RegularMedicine': ['Age', 'BMI', 'Junkfood', 'highBP', 'BPLevel']
 }
+
+# list with all columns that are keys of the correlation dictionary
+list_of_columns_with_correlation_analysis = correlation_dictionary.keys()
+
+# expander to show distribution for each column
+with st.beta_expander('Get distribution of data for each column'):
+    choosen_column = st.selectbox('Choose a column to see its distribution', df_diabetes.columns.to_list())
+    create_distribution_plot(choosen_column, df_diabetes)
+    if choosen_column in list_of_columns_with_correlation_analysis:
+        columns_for_correlation = st.selectbox('Choose a column for analyse correlation with ' + choosen_column,correlation_dictionary[choosen_column])
+
+
+
