@@ -6,7 +6,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import base64
 
-from dashboard_functions import datacleaning, replacing_null_values, text_for_nan_cleaning
+from dashboard_functions import datacleaning, replacing_null_values, text_for_description_of_columns, text_for_nan_cleaning
 
 # settings for streamlit page
 st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto")
@@ -140,7 +140,7 @@ meaning_of_columns = {'Age':'Age of the participants', 'Gender': 'Sex of the par
                         'Family_Diabetes':'It indicates if there were diabetes cases in the family of the participants.', 
                         'highBP':'It indicates if a participant was diagnosed with high blook pressure', 'PhysicallyActive': 'It indicates how much physical activity a participant does',
                        'BMI':'Body mass (fat) index of the participant', 'Smoking': "It denotes if a participant smokes or doesn't", 'Alcohol':'It indicates if a participant consumes alcohol or not', 
-                       'Sleep':'It indicates how much a participant sleeps', 'Soundsleep':'It indicates the amount of hours of sound sleep', 
+                       'Sleep':'It indicates how much a participant sleeps', 'SoundSleep':'It indicates the amount of hours of sound sleep', 
                        'RegularMedicine':'It indicates if a participant takes medicines regularly or not',
                        'JunkFood':'It indicates if a participant consumes a junk food or not','Stress':'It indicates the level of stress of the participants', 
                        'BPLevel':'Blood pressure level of participants', 'Pregnancies':'Number of pregnanancis for each participant', 
@@ -160,25 +160,11 @@ with st.beta_expander('Get info about columns'):
             if key == choosen_column:
                 st.text("")
                 st.write("*" + meaning_of_columns[key] + '*')
-                if key == 'Pregancies':
-                    list_of_possible_values = list(set(df_diabetes[key]))
-                    st.write('This column is a numerical column.'+ 
-                    ' Altough, the selected column can be considered as categorical since it can have only four values.')
-                    st.write('So, the selected column can have the following values:')
-                    for value in list_of_possible_values:
-                        st.markdown("- " + str(value))
-                if df_diabetes.dtypes[key] == np.object:
-                    list_of_possible_values = list(set(df_diabetes[key]))
-                    st.write('The selected column can have the following values:')
-                    for value in list_of_possible_values:
-                        st.markdown("- " + str(value))
-                if df_diabetes.dtypes[key] != np.object:
-                    minimum_value = df_diabetes[key].min()
-                    maximum_value = df_diabetes[key].max()
-                    medium_value = round(df_diabetes[key].mean(),2)
-                    st.write('The selected column contains numeric values with the following properties:')
-                    st.markdown("- Minimum value: " + str(minimum_value))
-                    st.markdown("- Maximum value: " + str(maximum_value))
-                    st.markdown("- Medium value: " + str(medium_value))
-                
+                text_for_description_of_columns(key, df_diabetes)
+                if key == 'Pregnancies':
+                    st.write("From the above list, we can see that *" + choosen_column +'* is a numeric column.' + 
+                    ' However, it can be considered, as described before, as a categorical variable since it can have only 5 different values, that can be considered ' +
+                    'as five different categories for the selected column')
+
+# ------------------------ DATA ANALYSIS ---------------------------
 

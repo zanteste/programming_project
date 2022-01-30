@@ -1,5 +1,6 @@
 import pandas as pd 
 import streamlit as st
+import numpy as np
 
 # function to replace null values in the columns BMI, Pregnancies, Pdiabetes and Diabetic
 def replacing_null_values(df_diabetes):
@@ -33,9 +34,7 @@ def text_for_nan_cleaning(nan_column):
                     'So, the row that presented the only null value of the ' + nan_column + ' column has been removed from the dataset.')
     if nan_column == 'Pdiabetes':
         return st.write('The selected column is a categorical variable, so we can substitute the null values with its most frequent value.')
-
-
-        
+       
 # function to clean errors in columns RegularMedicine, BPLevel, Pdiabetes and Diabetic
 def datacleaning(df_diabetes):
     # In the column RegularMedicine there is one field valued with 'o'. The column must have values 'yes/no'.
@@ -56,4 +55,24 @@ def datacleaning(df_diabetes):
 
     return df_diabetes
 
-    
+def text_for_description_of_columns(key, df_diabetes):
+    if key == 'Pregancies':
+        list_of_possible_values = list(set(df_diabetes[key]))
+        st.write('This column is a numerical column.'+ 
+        ' Altough, the selected column can be considered as categorical since it can have only four values.')
+        st.write('So, the selected column can have the following values:')
+        for value in list_of_possible_values:
+            st.markdown("- " + str(value))
+    if (df_diabetes.dtypes[key] == np.object) | (key == 'Pregnancies'):
+        list_of_possible_values = list(set(df_diabetes[key]))
+        st.write('The selected column can have the following values:')
+        for value in list_of_possible_values:
+            st.markdown("- " + str(value))
+    elif df_diabetes.dtypes[key] != np.object:
+        minimum_value = df_diabetes[key].min()
+        maximum_value = df_diabetes[key].max()
+        medium_value = round(df_diabetes[key].mean(),2)
+        st.write('The selected column contains numeric values with the following properties:')
+        st.markdown("- Minimum value: " + str(minimum_value))
+        st.markdown("- Maximum value: " + str(maximum_value))
+        st.markdown("- Medium value: " + str(medium_value))
