@@ -168,5 +168,8 @@ with st.beta_expander('Get info about columns'):
 
 # ------------------------ DATA ANALYSIS ---------------------------
 st.header('Data Analysis')
-st.write('After expoliring and cleaning the original dataset, the work continued with some data analysis.')
+st.write('After expoliring and cleaning the original dataset, the work continued with some data analysis with the following goals:')
+st.markdown('- analyze the main causes of diabetes;')
+st.markdown('- correlation between each feature (column) with the target of the project (*Diabetic* column).')
+
 
