@@ -6,7 +6,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import base64
 
-from dashboard_functions import datacleaning, replacing_null_values, text_for_description_of_columns, text_for_nan_cleaning
+from dashboard_functions import datacleaning, get_list_of_columns_types, replacing_null_values, text_for_description_of_columns, text_for_nan_cleaning
 
 # settings for streamlit page
 st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto")
@@ -171,5 +171,13 @@ st.header('Data Analysis')
 st.write('After expoliring and cleaning the original dataset, the work continued with some data analysis with the following goals:')
 st.markdown('- analyze the main causes of diabetes;')
 st.markdown('- correlation between each feature (column) with the target of the project (*Diabetic* column).')
+
+# get list of all possible types in the dataset
+types_of_col_in_dataframe = get_list_of_columns_types(df_diabetes)
+text_types_of_col_in_dataframe = ', '.join(types_of_col_in_dataframe)
+st.write('The type of the columns and the kind of values have been considered during data anlysis, in order to better analyse each feature of the dataset.' +
+        ' There are three different types of columns in the dataset: ' + text_types_of_col_in_dataframe + '.')
+st.write('All columns of type *object* can be considered as **categorical** features, while columns of type **float64** and **int64** are numerical features. ' +
+        'The column *Pregancies* (type *float64*) during the all data analysis process is considered as a categorical value for the reasons described before.')
 
 

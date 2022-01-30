@@ -76,3 +76,17 @@ def text_for_description_of_columns(key, df_diabetes):
         st.markdown("- Minimum value: " + str(minimum_value))
         st.markdown("- Maximum value: " + str(maximum_value))
         st.markdown("- Medium value: " + str(medium_value))
+
+# function to obtain list of all column types in the dataset
+def get_list_of_columns_types(df_diabetes):
+    cols_list = df_diabetes.columns.to_list()
+    types_of_col_in_dataframe = []
+    for col in cols_list:
+        if df_diabetes[col].dtype == 'object' and 'object' not in types_of_col_in_dataframe:
+            types_of_col_in_dataframe.append('object')
+        if df_diabetes[col].dtype == 'float64' and 'float64' not in types_of_col_in_dataframe:
+            types_of_col_in_dataframe.append('float64')
+        if df_diabetes[col].dtype == 'int64' and 'int64' not in types_of_col_in_dataframe:
+            types_of_col_in_dataframe.append('int64')
+    
+    return types_of_col_in_dataframe
