@@ -101,8 +101,10 @@ def color_sequence_for_graph(col):
         colors_based_on_value = {'less than 40':'#82E0AA', '40-49':'#2ECC71', '50-59':'#239B56', '60 or older':'#186A3B'}
     if col == 'Gender':
         colors_based_on_value = {'Male':'#AED6F1', 'Female':'#C39BD3'}
-    if col in ['Family_Diabetes', 'highBP', 'Smoking', 'Alcohol', 'RegularMedicine', 'Pdiabetes', 'Diabetic']:
+    if col in ['Family_Diabetes', 'Pdiabetes', 'Diabetic']:
         colors_based_on_value = {'no': '#E74C3C', 'yes': '#2ECC71'}
+    if col in ['Alcohol', 'Smoking', 'highBP', 'RegularMedicine']:
+        colors_based_on_value = {'no': '#2ECC71', 'yes': '#E74C3C'}
     if col == 'PhysicallyActive':
         colors_based_on_value = {'none':'#E67E22', 'less than half an hr': '#E74C3C', 'more than half an hr':'#F1C40F', 'one hr or more':'#2ECC71'}
     if col == 'JunkFood':
@@ -240,6 +242,7 @@ def text_for_correlation_hypothesis(choosen_column, df_diabetes):
 def create_correlation_plot(col1, col_corr, df):
     #if col1 in ['Sleep', 'BMI', 'SoundSleep']
     if (df[col_corr].dtype != 'object') & (col_corr != 'Pregnancies'):
+        df = custom_order_based_on_values(col1, df)
         fig = plt.figure(figsize=(10,6))
         g = sns.violinplot(x=col1, y=col_corr, data = df)
         g.set_title(col1 + ': correlation with column ' + col_corr, size=12)
@@ -249,11 +252,12 @@ def create_correlation_plot(col1, col_corr, df):
         
         df_groupby_corr = groupby_to_have_percentage_for_categories(col1, col_corr, df)
         # df_groupby_corr custom sort values based on 'Age' categories
-        if col1 == 'Age':
-            df_groupby_corr['Age'] = pd.Categorical(df_groupby_corr['Age'], ['less than 40', '40-49', '50-59', '60 or older'])
-            df_groupby_corr = df_groupby_corr.sort_values(by='Age')
+        df_groupby_corr = custom_order_based_on_values(col1, df_groupby_corr)
+        # use colors defined in the function 'color_sequence_for_graph' for the col_corr
+        colors_based_on_value = color_sequence_for_graph(col_corr)
         fig = plt.figure(figsize=(10,6))
-        g = sns.barplot(data=df_groupby_corr, x=col1, y='Participants percentage', hue=col_corr)
+        g = sns.barplot(data=df_groupby_corr, x=col1, y='Participants percentage', hue=col_corr, palette=colors_based_on_value)
+        plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         for p in g.patches:
             g.annotate(format(p.get_height(), '.0f'),
                       (p.get_x()+p.get_width() /2., p.get_height()),
