@@ -6,7 +6,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import base64
 
-from dashboard_functions import create_correlation_plot, create_distribution_plot, datacleaning, get_list_of_columns_types, replacing_null_values, text_for_description_of_columns, text_for_nan_cleaning
+from dashboard_functions import *
 
 # settings for streamlit page
 
@@ -197,10 +197,17 @@ list_of_columns_with_correlation_analysis = correlation_dictionary.keys()
 
 # expander to show distribution for each column
 with st.beta_expander('Get distribution of data for each column'):
+    #col1, col2 = st.beta_columns(2)
     choosen_column = st.selectbox('Choose a column to see its distribution', df_diabetes.columns.to_list())
     create_distribution_plot(choosen_column, df_diabetes)
-    if choosen_column in list_of_columns_with_correlation_analysis:
-        column_for_correlation = st.selectbox('Choose a column for analyse correlation with ' + choosen_column,correlation_dictionary[choosen_column])
-        create_correlation_plot(choosen_column, column_for_correlation, df_diabetes)
+    text_for_correlation_hypothesis(choosen_column, df_diabetes)
+    # list of columns for correlation with the selected column
+    list_of_columns_for_correlation = df_diabetes.columns.to_list()
+    # the choosen_column is removed from the list just created, because it's not useful to analyse correlation of a column with itself
+    list_of_columns_for_correlation.remove(choosen_column)
+    column_for_correlation = st.selectbox('',['Select a column for correlation'] + list_of_columns_for_correlation)
+    if column_for_correlation != 'Select a column for correlation':
+                create_correlation_plot(choosen_column, column_for_correlation, df_diabetes)
+
 
 

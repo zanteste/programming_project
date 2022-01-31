@@ -116,6 +116,18 @@ def create_distribution_plot(col, df):
         sns.distplot(df[col], color='green', bins=number_of_values_in_col)
         st.pyplot(fig)
 
+# function to define text for the best correlation analysis founded
+def text_for_correlation_hypothesis(choosen_column, df_diabetes):
+    if choosen_column == 'Age':
+        st.write('It can be interesting to analyse the correlation with the following columns:')
+        st.markdown("- **highBP**: analyse the probability of having high blood pressur based on the age;")
+        st.markdown("- **PhysicallyActive**: analyse how time spent in sport activities based on the age;")
+        st.markdown("- **BMI**: analyse if the fat percentage change based on the age;")
+        st.markdown("- **RegularMedicine**: it's normal to think that old people take medicine regularly;")
+        st.markdown("- **BPLevel**: analyse if the level of the blood pressure changes due to the age;")
+
+
+
 # function to create a plot to analyse the correlation between two columns
 def create_correlation_plot(col1, col_corr, df):
     if (df[col_corr].dtype != 'object') & (col_corr != 'Pregnancies'):
@@ -125,10 +137,25 @@ def create_correlation_plot(col1, col_corr, df):
         g.set_xlabel('')
         st.pyplot(fig)
     else:
-        df_col1_groupby_with_col_corr = df.groupby([col1, col_corr]).count()['Diabetic'].to_frame().reset_index()
-        df_col1_groupby_with_col_corr.columns = [col1, col_corr, 'Number of Participants']
-        fig = plt.figure(figsize=(10,6 ))
-        g = sns.barplot(data=df_col1_groupby_with_col_corr, x=col1, y='Number of Participants', hue=col_corr)
+        # groupby for the column in analysis (col1)
+        df_col1_groupby = df.groupby(col1).count()['Diabetic'].to_frame().reset_index()
+        name_column = 'Total_Participants_for_' + col1 + '_categories'
+        df_col1_groupby.columns = [col1, name_column]
+        #groupby for column in analysis (col1) and the columnt choosen for correlation (col_corr)
+        df_groupby_corr = df.groupby([col1, col_corr]).count()['Diabetic'].to_frame().reset_index()
+        df_groupby_corr.columns = [col1, col_corr, 'Number of Participants']
+        
+        #add total participants for category to df_groupby_corr
+        df_groupby_corr = pd.merge(df_groupby_corr, df_col1_groupby, on=col1)
+        df_groupby_corr['Participants percentage'] = df_groupby_corr['Number of Participants'] / df_groupby_corr[name_column] * 100
+        df_groupby_corr['Participants percentage'] = round(df_groupby_corr['Participants percentage'],0)
+
+        # df_groupby_corr custom sort values based on 'Age' categories
+        if col1 == 'Age':
+            df_groupby_corr['Age'] = pd.Categorical(df_groupby_corr['Age'], ['less than 40', '40-49', '50-59', '60 or older'])
+            df_groupby_corr = df_groupby_corr.sort_values(by='Age')
+        fig = plt.figure(figsize=(10,6))
+        g = sns.barplot(data=df_groupby_corr, x=col1, y='Participants percentage', hue=col_corr)
         for p in g.patches:
             g.annotate(format(p.get_height(), '.0f'),
                       (p.get_x()+p.get_width() /2., p.get_height()),
@@ -137,3 +164,4 @@ def create_correlation_plot(col1, col_corr, df):
                       textcoords = 'offset points',
                       size=12)
         st.pyplot(fig)
+
