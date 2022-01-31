@@ -1,3 +1,4 @@
+import colorsys
 from matplotlib import colors
 import pandas as pd 
 import streamlit as st
@@ -95,7 +96,7 @@ def get_list_of_columns_types(df_diabetes):
     return types_of_col_in_dataframe
 
 # function to define a sequence of colors for plots
-def color_sequence_for_graph(col, df):
+def color_sequence_for_graph(col):
     if col == 'Age':
         colors_based_on_value = {'less than 40':'#82E0AA', '40-49':'#2ECC71', '50-59':'#239B56', '60 or older':'#186A3B'}
     if col == 'Gender':
@@ -103,27 +104,79 @@ def color_sequence_for_graph(col, df):
     if col in ['Family_Diabetes', 'highBP', 'Smoking', 'Alcohol', 'RegularMedicine', 'Pdiabetes', 'Diabetic']:
         colors_based_on_value = {'no': '#E74C3C', 'yes': '#2ECC71'}
     if col == 'PhysicallyActive':
-        colors_based_on_value = {'none':'#E67E22', 'less than half an hr': '#F39C12', 'more than half an hr':'#F1C40F', 'one hr or more':'#2ECC71'}
+        colors_based_on_value = {'none':'#E67E22', 'less than half an hr': '#E74C3C', 'more than half an hr':'#F1C40F', 'one hr or more':'#2ECC71'}
     if col == 'JunkFood':
-        colors_based_on_value = {'always':'#2ECC71', 'often':'#F39C12', 'occasionally':'#E67E22', 'very often':'#F1C40F'}
+        colors_based_on_value = {'occasionally':'#2ECC71', 'often':'#F1C40F', 'very often':'#F39C12', 'always':'#E74C3C'}
     if col == 'Stress':
-        colors_based_on_value = {'always':'#2ECC71', 'sometimes':'#F39C12', 'not at all':'#E67E22', 'very often':'#F1C40F'}
+        colors_based_on_value = {'not at all':'#2ECC71', 'sometimes':'#F1C40F', 'very often':'#F39C12', 'always':'#E74C3C'}
     if col == 'BPLevel':
         colors_based_on_value = {'normal':'#2ECC71', 'low':'#F1C40F', 'high':'#E74C3C'}
     if col == 'Pregnancies':
         colors_based_on_value = {0.0:'#85C1E9', 1.0:'#5DADE2', 2.0:'#3498DB', 3.0:'#2E86C1', 4.0:'#2874A6'}
     if col == 'UrinationFreq':
         colors_based_on_value = {'quite often':'#2ECC71', 'not much':'#E74C3C'}
+    return colors_based_on_value
     
+
+# function to create a dataframe that make a groupby for the category of the column in analysis 
+# with the ecategories of the column for which we want to analyse the correlation
+def groupby_to_have_percentage_for_categories(col, col_corr, df):
+    # groupby for the column in analysis (col1)
+    df_col1_groupby = df.groupby(col).count()['Diabetic'].to_frame().reset_index()
+    name_column = 'Total_Participants_for_' + col + '_categories'
+    df_col1_groupby.columns = [col, name_column]
+    #groupby for column in analysis (col1) and the columnt choosen for correlation (col_corr)
+    df_groupby_corr = df.groupby([col, col_corr]).count()['Diabetic'].to_frame().reset_index()
+    df_groupby_corr.columns = [col, col_corr, 'Number of Participants']
     
+    #add total participants for category to df_groupby_corr
+    df_groupby_corr = pd.merge(df_groupby_corr, df_col1_groupby, on=col)
+    df_groupby_corr['Participants percentage'] = df_groupby_corr['Number of Participants'] / df_groupby_corr[name_column] * 100
+    df_groupby_corr['Participants percentage'] = round(df_groupby_corr['Participants percentage'],0)
+    
+    return df_groupby_corr
+    
+
+# function to create a ordered list for the 'categorical' values of a column
+def list_categorical_order(col):
+    if col == 'Age':
+        list_order_values = ['less than 40', '40-49', '50-59', '60 or older']
+    if col == 'Gender':
+        list_order_values = ['Female', 'Male']
+    if col in ['Family_Diabetes', 'highBP', 'Smoking', 'Alcohol', 'RegularMedicine', 'Pdiabetes', 'Diabetic']:
+        list_order_values = ['no', 'yes']
+    if col == 'PhysicallyActive':
+        list_order_values  = ['none', 'less than half an hr', 'more than half an hr', 'one hr or more']
+    if col == 'JunkFood':
+        list_order_values = ['occasionally', 'often', 'very often', 'always']
+    if col == 'Stress':
+        list_order_values = ['not at all', 'sometimes', 'very often', 'always']
+    if col == 'BPLevel':
+        list_order_values = ['low', 'normal', 'high']
+    if col == 'UrinationFreq':
+        list_order_values = ['not much', 'quite often']
+    return list_order_values
+# function to order a dataframe based on categorical order of its values
+def custom_order_based_on_values(col, df):
+    list_values_in_order = list_categorical_order(col)
+    
+    # ordering dataframe based on the list in which the values are in the requested order
+    df[col] = pd.Categorical(df[col], list_values_in_order)
+    df = df.sort_values(by=col)
+    return df
 
 # function to create distribution for each column of the dataset
 def create_distribution_plot(col, df):
     if (df[col].dtype == 'object') | (col == 'Pregnancies'):
+
         df_values_in_selected_col = df[col].value_counts().to_frame().reset_index()
         df_values_in_selected_col.columns = [col, 'Number of Participants']
+        # ordering the dataframe just created according to the list of the requested order
+        df_values_in_selected_col = custom_order_based_on_values(col, df_values_in_selected_col)
         fig = plt.figure(figsize=(10,6))
-        graph = sns.barplot(x=df_values_in_selected_col[col], y=df_values_in_selected_col['Number of Participants'], palette='Greens')
+        # use colors defined in the function 'color_sequence_for_graph'
+        colors_for_value = color_sequence_for_graph(col)
+        graph = sns.barplot(x=df_values_in_selected_col[col], y=df_values_in_selected_col['Number of Participants'], palette=colors_for_value)
         for p in graph.patches:
             graph.annotate(format(p.get_height(), '.0f'),
                         (p.get_x()+p.get_width() /2., p.get_height()),
@@ -183,11 +236,6 @@ def text_for_correlation_hypothesis(choosen_column, df_diabetes):
         st.markdown("- **BMI**: analyse if taking medicine regularly affects the fat percetnage of a person;")
         st.markdown("- **PhysicallyActive**: analyse if taking medicine regularly affects the sports activity of a person.")
 
-        
-        
-
-
-
 # function to create a plot to analyse the correlation between two columns
 def create_correlation_plot(col1, col_corr, df):
     #if col1 in ['Sleep', 'BMI', 'SoundSleep']
@@ -198,19 +246,8 @@ def create_correlation_plot(col1, col_corr, df):
         g.set_xlabel('')
         st.pyplot(fig)
     else:
-        # groupby for the column in analysis (col1)
-        df_col1_groupby = df.groupby(col1).count()['Diabetic'].to_frame().reset_index()
-        name_column = 'Total_Participants_for_' + col1 + '_categories'
-        df_col1_groupby.columns = [col1, name_column]
-        #groupby for column in analysis (col1) and the columnt choosen for correlation (col_corr)
-        df_groupby_corr = df.groupby([col1, col_corr]).count()['Diabetic'].to_frame().reset_index()
-        df_groupby_corr.columns = [col1, col_corr, 'Number of Participants']
         
-        #add total participants for category to df_groupby_corr
-        df_groupby_corr = pd.merge(df_groupby_corr, df_col1_groupby, on=col1)
-        df_groupby_corr['Participants percentage'] = df_groupby_corr['Number of Participants'] / df_groupby_corr[name_column] * 100
-        df_groupby_corr['Participants percentage'] = round(df_groupby_corr['Participants percentage'],0)
-
+        df_groupby_corr = groupby_to_have_percentage_for_categories(col1, col_corr, df)
         # df_groupby_corr custom sort values based on 'Age' categories
         if col1 == 'Age':
             df_groupby_corr['Age'] = pd.Categorical(df_groupby_corr['Age'], ['less than 40', '40-49', '50-59', '60 or older'])
