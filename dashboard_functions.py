@@ -243,8 +243,9 @@ def create_correlation_plot(col1, col_corr, df):
     #if col1 in ['Sleep', 'BMI', 'SoundSleep']
     if (df[col_corr].dtype != 'object') & (col_corr != 'Pregnancies'):
         df = custom_order_based_on_values(col1, df)
+        colors_based_on_value = color_sequence_for_graph(col1)
         fig = plt.figure(figsize=(10,6))
-        g = sns.violinplot(x=col1, y=col_corr, data = df)
+        g = sns.violinplot(x=col1, y=col_corr, data = df, palette=colors_based_on_value)
         g.set_title(col1 + ': correlation with column ' + col_corr, size=12)
         g.set_xlabel('')
         st.pyplot(fig)
