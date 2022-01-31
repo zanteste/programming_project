@@ -1,3 +1,4 @@
+from matplotlib import colors
 import pandas as pd 
 import streamlit as st
 import numpy as np
@@ -93,6 +94,29 @@ def get_list_of_columns_types(df_diabetes):
     
     return types_of_col_in_dataframe
 
+# function to define a sequence of colors for plots
+def color_sequence_for_graph(col, df):
+    if col == 'Age':
+        colors_based_on_value = {'less than 40':'#82E0AA', '40-49':'#2ECC71', '50-59':'#239B56', '60 or older':'#186A3B'}
+    if col == 'Gender':
+        colors_based_on_value = {'Male':'#AED6F1', 'Female':'#C39BD3'}
+    if col in ['Family_Diabetes', 'highBP', 'Smoking', 'Alcohol', 'RegularMedicine', 'Pdiabetes', 'Diabetic']:
+        colors_based_on_value = {'no': '#E74C3C', 'yes': '#2ECC71'}
+    if col == 'PhysicallyActive':
+        colors_based_on_value = {'none':'#E67E22', 'less than half an hr': '#F39C12', 'more than half an hr':'#F1C40F', 'one hr or more':'#2ECC71'}
+    if col == 'JunkFood':
+        colors_based_on_value = {'always':'#2ECC71', 'often':'#F39C12', 'occasionally':'#E67E22', 'very often':'#F1C40F'}
+    if col == 'Stress':
+        colors_based_on_value = {'always':'#2ECC71', 'sometimes':'#F39C12', 'not at all':'#E67E22', 'very often':'#F1C40F'}
+    if col == 'BPLevel':
+        colors_based_on_value = {'normal':'#2ECC71', 'low':'#F1C40F', 'high':'#E74C3C'}
+    if col == 'Pregnancies':
+        colors_based_on_value = {0.0:'#85C1E9', 1.0:'#5DADE2', 2.0:'#3498DB', 3.0:'#2E86C1', 4.0:'#2874A6'}
+    if col == 'UrinationFreq':
+        colors_based_on_value = {'quite often':'#2ECC71', 'not much':'#E74C3C'}
+    
+    
+
 # function to create distribution for each column of the dataset
 def create_distribution_plot(col, df):
     if (df[col].dtype == 'object') | (col == 'Pregnancies'):
@@ -166,6 +190,7 @@ def text_for_correlation_hypothesis(choosen_column, df_diabetes):
 
 # function to create a plot to analyse the correlation between two columns
 def create_correlation_plot(col1, col_corr, df):
+    #if col1 in ['Sleep', 'BMI', 'SoundSleep']
     if (df[col_corr].dtype != 'object') & (col_corr != 'Pregnancies'):
         fig = plt.figure(figsize=(10,6))
         g = sns.violinplot(x=col1, y=col_corr, data = df)
