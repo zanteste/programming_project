@@ -118,13 +118,52 @@ def create_distribution_plot(col, df):
 
 # function to define text for the best correlation analysis founded
 def text_for_correlation_hypothesis(choosen_column, df_diabetes):
+    st.write('It can be interesting to analyse the correlation with the following columns:')
     if choosen_column == 'Age':
-        st.write('It can be interesting to analyse the correlation with the following columns:')
         st.markdown("- **highBP**: analyse the probability of having high blood pressur based on the age;")
         st.markdown("- **PhysicallyActive**: analyse how time spent in sport activities based on the age;")
         st.markdown("- **BMI**: analyse if the fat percentage change based on the age;")
         st.markdown("- **RegularMedicine**: it's normal to think that old people take medicine regularly;")
         st.markdown("- **BPLevel**: analyse if the level of the blood pressure changes due to the age;")
+    if choosen_column == 'Gender':
+        st.markdown("- **Smoking**: ")
+        st.markdown("- **Alcohol**: ")
+        st.markdown("- **JunkFood**: ")
+        st.markdown("- **PhysicallyActive**: ")
+    if choosen_column == 'PhysicallyActive':
+        st.markdown("- **highBP**: ")
+        st.markdown("- **BMI**: ")
+        st.markdown("- **Smoking**: ")
+        st.markdown("- **Alcohol**: ")
+        st.markdown("- **JunkFood**: ")
+        st.markdown("- **Stress**: ")
+        st.markdown("- **UrinationFreq**: ")
+        st.markdown("- **Sleep**: ")
+        st.markdown("- **SoundSleep**: ")
+    if choosen_column == 'Smoking':
+        st.markdown("- **Alcohol**: ")
+        st.markdown("- **Stress**: ")
+        st.markdown("- **Sleep**: ")
+        st.markdown("- **SoundSleep**: ")
+    if choosen_column == 'Alcohol':
+        st.markdown("- **Smoking**: ")
+        st.markdown("- **Stress**: ")
+        st.markdown("- **Sleep**: ")
+        st.markdown("- **SoundSleep**: ")
+    if choosen_column == 'Sleep':
+        st.markdown("- **Stress**: ")
+        st.markdown("- **BMI**: ")
+    if choosen_column == 'SoundSleep':
+        st.markdown("- **Stress**: ")
+        st.markdown("- **BMI**: ")
+    if choosen_column == 'JunkFood':
+        st.markdown("- **BMI**: ")
+    if choosen_column == 'RegularMedicine':
+        st.markdown("- **BMI**: ")
+        st.markdown("- **PhysicallyActive**: ")
+
+        
+        
 
 
 
