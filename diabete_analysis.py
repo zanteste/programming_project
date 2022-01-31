@@ -182,18 +182,19 @@ st.write('All columns of type *object* can be considered as **categorical** feat
 
 # creation of a dictionary that pairs a column with others with which is interesting to analyse correlation
 correlation_dictionary = {
-    'Age': ['BMI', 'JunkFood', 'Stress', 'highBP', 'BPLevel', 'UrinationFreq', 'Pdiabetes'],
-    'Gender': ['BMI', 'Alcohol', 'Smoking', 'JunkFood', 'Stress'],
-    'PhysicallyActive': ['BMI', 'Smoking', 'Alcohol', 'highBP', 'BPLevel', 'UriationFreq', 'JunkFood'],
-    'BMI': ['Junkfodd', 'Alcohol', 'Smoking', 'Sleep', 'Soundsleep', 'BPLevel', 'highBP'],
-    'Smoking': ['Sleep', 'SoundSleep'],
-    'Alcohol': ['Sleep', 'SoundSleep'],
-    'Stress': ['Alcohol', 'Smoking', 'Sleep', 'Soundsleep'],
-    'RegularMedicine': ['Age', 'BMI', 'JunkFood', 'highBP', 'BPLevel']
+    'Age': ['highBP', 'PhysicallyActive', 'BMI', 'RegularMedicine', 'BPLevel',],
+    'Gender': ['Smoking', 'Alcohol', 'JunkFood', 'PhysicalyActive'],
+    'PhysicallyActive': ['highBP', 'BMI', 'Smoking', 'Alcohol', 'JunkFood', 'Stress', 'UrinationFreq', 'Sleep', 'SoundSleep'],
+    'Smoking': ['Alcohol', 'Stress' ,'Seep', 'SoundSleep'],
+    'Alcohol': ['Stress','Sleep', 'SoundSleep'],
+    'Sleep': ['SoundSleep', 'BMI'],
+    'BMI': ['Sleep', 'SoundSleep'],
+    'SoundSleep': ['Sleep', 'BMI'],
+    'JunkFood': ['BMI'],
+    'RegularMedicine': ['BMI', 'PhysicallyActive']
 }
 
-# list with all columns that are keys of the correlation dictionary
-list_of_columns_with_correlation_analysis = correlation_dictionary.keys()
+
 
 # expander to show distribution for each column
 with st.beta_expander('Get distribution of data for each column'):
@@ -202,12 +203,10 @@ with st.beta_expander('Get distribution of data for each column'):
     create_distribution_plot(choosen_column, df_diabetes)
     text_for_correlation_hypothesis(choosen_column, df_diabetes)
     # list of columns for correlation with the selected column
-    list_of_columns_for_correlation = df_diabetes.columns.to_list()
-    # the choosen_column is removed from the list just created, because it's not useful to analyse correlation of a column with itself
-    list_of_columns_for_correlation.remove(choosen_column)
-    column_for_correlation = st.selectbox('',['Select a column for correlation'] + list_of_columns_for_correlation)
-    if column_for_correlation != 'Select a column for correlation':
-                create_correlation_plot(choosen_column, column_for_correlation, df_diabetes)
+    if choosen_column in correlation_dictionary.keys():
+        column_for_correlation = st.selectbox('',['Select a column for correlation'] + correlation_dictionary[choosen_column])
+        if column_for_correlation != 'Select a column for correlation':
+                    create_correlation_plot(choosen_column, column_for_correlation, df_diabetes)
 
 
 
