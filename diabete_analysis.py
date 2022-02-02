@@ -191,7 +191,8 @@ correlation_dictionary = {
     'BMI': ['Sleep', 'SoundSleep'],
     'SoundSleep': ['Sleep', 'BMI'],
     'JunkFood': ['BMI'],
-    'RegularMedicine': ['BMI', 'PhysicallyActive']
+    'RegularMedicine': ['BMI', 'PhysicallyActive'],
+    'highBP': ['BPLevel']
 }
 
 
@@ -207,6 +208,7 @@ with st.beta_expander('Get distribution of data for each column'):
         column_for_correlation = st.selectbox('',['Select a column for correlation'] + correlation_dictionary[choosen_column])
         if column_for_correlation != 'Select a column for correlation':
                     create_correlation_plot(choosen_column, column_for_correlation, df_diabetes)
+                    text_results_correlation_analysis(choosen_column, column_for_correlation)
 
 
 

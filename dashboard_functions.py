@@ -237,6 +237,8 @@ def text_for_correlation_hypothesis(choosen_column, df_diabetes):
     if choosen_column == 'RegularMedicine':
         st.markdown("- **BMI**: analyse if taking medicine regularly affects the fat percetnage of a person;")
         st.markdown("- **PhysicallyActive**: analyse if taking medicine regularly affects the sports activity of a person.")
+    if choosen_column == 'highBP':
+        st.markdown("- **BPLevel**: analyse it all the participants with high blood pressure have been diagnosed with this level of blood pressure")
 
 # function to create a plot to analyse the correlation between two columns
 def create_correlation_plot(col1, col_corr, df):
@@ -268,3 +270,14 @@ def create_correlation_plot(col1, col_corr, df):
                       size=12)
         st.pyplot(fig)
 
+# function to define a text for results of correlation
+def text_results_correlation_analysis(col1, col_corr):
+    if col1 == 'highBP' and col_corr == 'BPLevel':
+        st.write('As it can be seen in the graph above, 25% of the participants diagnosed with high blood pressure at the moment of the questionaire had a normal blood pressure, while the 6% that were diagnosed with no high blood pressure had high blood pressure when compiling the questionaire. ')
+    if col1 == 'Age':
+        if col_corr ==  'highBP':
+            st.write('Analysing the graph above, it can be seen that the percentage of participants with high blood pressure diagnosed increases with the age of the participants. So, we can say that the older a person is, the more likely they are to have been diagnosed with high blood pressure.')
+        if col_corr == 'PhysicallyActive':
+            st.write("Analysing the graph above, it can be seen that older a person is, the lower the percentage of physical activity carried out. It's easy to suppose the reason of that behaviour: older people have less energy than a younger one, so it's difficult for them to do physical activity. ")
+        if col_corr == 'BMI':
+            st.write('Analysing the graph above, it can be seen that the BMI of participants tends to get worse the older a person is. This can obviously be caused by the seniority of the participants, but also from a less time spent for physical activity (see the correlation between *Age* and *PhysicallyActive*)')
