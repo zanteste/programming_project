@@ -276,8 +276,8 @@ def text_results_correlation_analysis(col1, col_corr):
         st.write('As it can be seen in the graph above, 25% of the participants diagnosed with high blood pressure at the moment of the questionaire had a normal blood pressure, while the 6% that were diagnosed with no high blood pressure had high blood pressure when compiling the questionaire. ')
     if col1 == 'Age':
         if col_corr ==  'highBP':
-            st.write('Analysing the graph above, it can be seen that the percentage of participants with high blood pressure diagnosed increases with the age of the participants. So, we can say that the older a person is, the more likely they are to have been diagnosed with high blood pressure.')
+            st.write('Analysing the graph above, it can be seen that the percentage of participants with high blood pressure diagnosed increases with the age of the participants. So, we can say that the older a person is, the more likely he is to be diagnosed with high blood pressure.')
         if col_corr == 'PhysicallyActive':
             st.write("Analysing the graph above, it can be seen that older a person is, the lower the percentage of physical activity carried out. It's easy to suppose the reason of that behaviour: older people have less energy than a younger one, so it's difficult for them to do physical activity. ")
         if col_corr == 'BMI':
-            st.write('Analysing the graph above, it can be seen that the BMI of participants tends to get worse the older a person is. This can obviously be caused by the seniority of the participants, but also from a less time spent for physical activity (see the correlation between *Age* and *PhysicallyActive*)')
+            st.write('Analysing the graph above, it can be seen that the BMI of participants tends to get worse the older a person is. This can obviously be caused by the seniority of the participants, but also from a less time spent for physical activity (see the correlation between *Age* and *PhysicallyActive*).')
