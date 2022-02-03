@@ -203,14 +203,9 @@ with st.beta_expander('Get distribution of data for each column'):
     #text_for_correlation_hypothesis(choosen_column, df_diabetes
     # list of columns for correlation with the selected column
     if choosen_column in correlation_dictionary.keys():
-        # column_for_correlation = st.selectbox('',['Select a column for correlation'] + correlation_dictionary[choosen_column])
-        # if column_for_correlation != 'Select a column for correlation':
-        #            create_correlation_plot(choosen_column, column_for_correlation, df_diabetes)
-        #            text_results_correlation_analysis(choosen_column, column_for_correlation)
         
+        # creation of a button for each of correlation columns for the choosen_column
         for col_corr in correlation_dictionary[choosen_column]:
             if st.button(choosen_column + ' correlation with ' + col_corr ):
                 create_correlation_plot(choosen_column, col_corr, df_diabetes)
                 text_results_correlation_analysis(choosen_column, col_corr)
-
-
