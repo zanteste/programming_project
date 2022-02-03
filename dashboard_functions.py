@@ -106,7 +106,7 @@ def color_sequence_for_graph(col):
     if col in ['Alcohol', 'Smoking', 'highBP', 'RegularMedicine']:
         colors_based_on_value = {'no': '#2ECC71', 'yes': '#E74C3C'}
     if col == 'PhysicallyActive':
-        colors_based_on_value = {'none':'#E67E22', 'less than half an hr': '#E74C3C', 'more than half an hr':'#F1C40F', 'one hr or more':'#2ECC71'}
+        colors_based_on_value = {'none':'#E74C3C', 'less than half an hr': '#E67E22', 'more than half an hr':'#F1C40F', 'one hr or more':'#2ECC71'}
     if col == 'JunkFood':
         colors_based_on_value = {'occasionally':'#2ECC71', 'often':'#F1C40F', 'very often':'#F39C12', 'always':'#E74C3C'}
     if col == 'Stress':
@@ -159,12 +159,23 @@ def list_categorical_order(col):
         list_order_values = ['not much', 'quite often']
     return list_order_values
 # function to order a dataframe based on categorical order of its values
-def custom_order_based_on_values(col, df):
+def custom_order_based_on_values_one_col(col, df):
     list_values_in_order = list_categorical_order(col)
     
     # ordering dataframe based on the list in which the values are in the requested order
     df[col] = pd.Categorical(df[col], list_values_in_order)
     df = df.sort_values(by=col)
+    return df
+
+# function to order a dataframe based on categorical order of two differente columns
+def custom_order_based_on_values_two_col(col1, col2, df):
+    list_values_in_order_col1 = list_categorical_order(col1)
+    list_values_in_order_col2 = list_categorical_order(col2)
+
+    df[col1] = pd.Categorical(df[col1], list_values_in_order_col1)
+    df[col2] = pd.Categorical(df[col2], list_values_in_order_col2)
+
+    df = df.sort_values(by=[col1, col2])
     return df
 
 # function to create distribution for each column of the dataset
@@ -174,7 +185,7 @@ def create_distribution_plot(col, df):
         df_values_in_selected_col = df[col].value_counts().to_frame().reset_index()
         df_values_in_selected_col.columns = [col, 'Number of Participants']
         # ordering the dataframe just created according to the list of the requested order
-        df_values_in_selected_col = custom_order_based_on_values(col, df_values_in_selected_col)
+        df_values_in_selected_col = custom_order_based_on_values_one_col(col, df_values_in_selected_col)
         fig = plt.figure(figsize=(10,6))
         # use colors defined in the function 'color_sequence_for_graph'
         colors_for_value = color_sequence_for_graph(col)
@@ -244,7 +255,7 @@ def text_for_correlation_hypothesis(choosen_column, df_diabetes):
 def create_correlation_plot(col1, col_corr, df):
     #if col1 in ['Sleep', 'BMI', 'SoundSleep']
     if (df[col_corr].dtype != 'object') & (col_corr != 'Pregnancies'):
-        df = custom_order_based_on_values(col1, df)
+        df = custom_order_based_on_values_one_col(col1, df)
         colors_based_on_value = color_sequence_for_graph(col1)
         fig = plt.figure(figsize=(10,6))
         g = sns.violinplot(x=col1, y=col_corr, data = df, palette=colors_based_on_value)
@@ -255,7 +266,7 @@ def create_correlation_plot(col1, col_corr, df):
         
         df_groupby_corr = groupby_to_have_percentage_for_categories(col1, col_corr, df)
         # df_groupby_corr custom sort values based on 'Age' categories
-        df_groupby_corr = custom_order_based_on_values(col1, df_groupby_corr)
+        df_groupby_corr = custom_order_based_on_values_two_col(col1, col_corr, df_groupby_corr)
         # use colors defined in the function 'color_sequence_for_graph' for the col_corr
         colors_based_on_value = color_sequence_for_graph(col_corr)
         fig = plt.figure(figsize=(10,6))
@@ -278,6 +289,32 @@ def text_results_correlation_analysis(col1, col_corr):
         if col_corr ==  'highBP':
             st.write('Analysing the graph above, it can be seen that the percentage of participants with high blood pressure diagnosed increases with the age of the participants. So, we can say that the older a person is, the more likely he is to be diagnosed with high blood pressure.')
         if col_corr == 'PhysicallyActive':
-            st.write("Analysing the graph above, it can be seen that older a person is, the lower the percentage of physical activity carried out. It's easy to suppose the reason of that behaviour: older people have less energy than a younger one, so it's difficult for them to do physical activity. ")
+            st.write("Analysing the graph above, it can be seen that older a person is, the lower the percentage of physical activity carried out." + 
+                    " It's easy to suppose the reason of that behaviour: older people have less energy than a younger one, so it's difficult for them to do physical activity. " +
+                    " In particular, it's possible to see that the percentage of participants that selected the 'none' option increases with the age of the people, while the percentage for 'one hr or more' decreases.")
         if col_corr == 'BMI':
-            st.write('Analysing the graph above, it can be seen that the BMI of participants tends to get worse the older a person is. This can obviously be caused by the seniority of the participants, but also from a less time spent for physical activity (see the correlation between *Age* and *PhysicallyActive*).')
+            st.write('Analysing the graph above, it can be seen that the BMI of participants tends to get worse the older a person is. This can obviously be caused by the seniority of the participants,' + 
+                    ' but also from a less time spent for physical activity (see the correlation between *Age* and *PhysicallyActive*).')
+        if col_corr == 'RegularMedicine':
+            st.write("Analysing the graph above, it's possible to see that the percentage of participants that take medicine regularly increases with the age, as expected.")
+        if col_corr == 'BPLevel':
+            st.write("Analysing the graph above, it's possible to see that older a person is the probability of having high blood pressure increases. For example, 61% of participants older than 60 has a high blood pressure," + 
+            " while only the 6% of participants younger than 40 has this type of blood pressure. ")
+        if col_corr == 'JunkFood':
+            st.write("Analysing the graph above, it's possible to see that the junk food consumption decreases with increasing age of the participants.")
+        if col_corr == 'Stress':
+            st.write("From the graph above, it's possible to see that stress level is higher for older people.")
+        if col_corr == 'UrinationFreq':
+            st.write("From the graph above, it's possible to see that the urination frequency is higher among older people. In particular, the 47% of the participants with an age greather or equal than 60 select the option '*quite often*' to indicate their urination frequency.")
+
+    if col1 == 'Gender':
+        if col_corr == 'Smoking':
+            st.write("From the graph above, it's possible to see that only the 19% of male participants declared to smoke, while no female participants smoke.")
+        if col_corr == 'Alcohol':
+            st.write("From the graph above, it's possible to see that the percentage of participants that smoke is higher among the men: 30% against 4%.")
+        if col_corr == 'JunkFood':
+            st.write("Analysing the graph above, it's possible to see that there is any big difference between males and females in terms of junk food consumption. " + 
+            " There is only a little difference regarding the percentage of participants that have selected the option 'always': 6% amont the men and 2% among the girls.")
+        if col_corr == 'PhysicalyActive':
+            st.write("")
+    
