@@ -283,8 +283,6 @@ def create_correlation_plot(col1, col_corr, df):
 
 # function to define a text for results of correlation
 def text_results_correlation_analysis(col1, col_corr):
-    if col1 == 'highBP' and col_corr == 'BPLevel':
-        st.write('As it can be seen in the graph above, 25% of the participants diagnosed with high blood pressure at the moment of the questionaire had a normal blood pressure, while the 6% that were diagnosed with no high blood pressure had high blood pressure when compiling the questionaire. ')
     if col1 == 'Age':
         if col_corr ==  'highBP':
             st.write('Analysing the graph above, it can be seen that the percentage of participants with high blood pressure diagnosed increases with the age of the participants. So, we can say that the older a person is, the more likely he is to be diagnosed with high blood pressure.')
@@ -312,9 +310,23 @@ def text_results_correlation_analysis(col1, col_corr):
             st.write("From the graph above, it's possible to see that only the 19% of male participants declared to smoke, while no female participants smoke.")
         if col_corr == 'Alcohol':
             st.write("From the graph above, it's possible to see that the percentage of participants that smoke is higher among the men: 30% against 4%.")
-        if col_corr == 'JunkFood':
-            st.write("Analysing the graph above, it's possible to see that there is any big difference between males and females in terms of junk food consumption. " + 
-            " There is only a little difference regarding the percentage of participants that have selected the option 'always': 6% amont the men and 2% among the girls.")
-        if col_corr == 'PhysicalyActive':
-            st.write("")
-    
+        if col_corr == 'BMI':
+            st.write("From the analysis of the graph above, it's possible to see that males tend to have a smaller BMI indicator. Indeed, if we take a look to the distribution referred to females BMI, it's easy to see that there are, in percentage, more females with a BMI greather than 30. " + 
+                    " Furthemore, the maximum BMI value for females is about 50, while the maximum for males is about 40. ")
+        if col_corr == 'RegularMedicine':
+            st.write("Analysing the graph above, it's possible to see that there is a higher percentage of females that takes medicine regularly: 43% vs 30%.")
+        if col_corr == 'UrinationFreq':
+            st.write("From the graph above, it's possible to see that the urination frequency is higher among the females.")
+    if col1 == 'highBP':
+        if col_corr ==  'Age':
+            st.write('Analysing the graph above, it can be seen that the percentage of participants with high blood pressure diagnosed increases with the age of the participants. So, we can say that the older a person is, the more likely he is to be diagnosed with high blood pressure.')
+        if col_corr == 'BMI':
+            st.write("Analysing the graph above, it's possible to see that the participants with high blood pressure diagnosed tend to have a higher BMI indicator. " + 
+                    "Indeed, most participants with high blood pressure diagnosed have a BMI greather than 25, while the partipants with no high blood pressure diagnosed have a BMI smaller than 25. " +
+                    "From this correlation analysis, it's possible to say that a person with an high BMI indicator has more probability to have a high blood pressure.")
+        if col_corr == 'Stress':
+            st.write("From the graph above, it's possible to see that there is an higher percentage of participants that declare the highest level of stress (always) among the ones whos has been diagnosed with high Blood Pressure")
+        if col_corr == 'BPLevel':
+            st.write('As it can be seen in the graph above, 25% of the participants diagnosed with high blood pressure at the moment of the questionaire had a normal blood pressure, while the 6% that were diagnosed with no high blood pressure had high blood pressure when compiling the questionaire. ')
+        if col_corr == 'UrinationFreq':
+            st.write("From the graph above, it's possible to see that thre are more participants with the higher frequency of urination among the ones with high blood pressure diagnosed.")
