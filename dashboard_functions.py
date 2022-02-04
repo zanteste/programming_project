@@ -192,8 +192,8 @@ def custom_order_based_on_values_two_col(col1, col2, df):
 
 # function to create distribution for each column of the dataset
 def create_distribution_plot(col, df):
-    if (df[col].dtype == 'object') | (col == 'Pregnancies'):
-
+    #if (df[col].dtype == 'object') | (col == 'Pregnancies'):
+    if (col not in ['BMI', 'Sleep', 'SoundSleep']):
         df_values_in_selected_col = df[col].value_counts().to_frame().reset_index()
         df_values_in_selected_col.columns = [col, 'Number of Participants']
         # ordering the dataframe just created according to the list of the requested order
