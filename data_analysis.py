@@ -44,11 +44,13 @@ def app():
                         'Sleep with SoundSleep and BMI', 'JunkFood with BMI', 'RegularMedicine with Family_Diabetes', 'RegularMedicine with JunkFood', 'RegularMedicine with Stress',
                         'RegularMedicine with BPLevel', 'RegularMedicine with UrinationFreq', 'highBP with BMI', 'highBP with Stress', 'highBP with BPLevel', 'highBP with UriantionFreq']
     correlation_list = sorted(correlation_list)
+    # add a default element to list 'Select a correlation' so correlation graph is not shown automatically when the app starts
+    correlation_list = ['Select a correlation'] + correlation_list
 
 
     correlation_to_analyse = st.sidebar.selectbox('Correlation', correlation_list)
 
     st.write("In the sidebar there is a select box in which it's possible to select a correlation to see the analysis among those that were found to be most interesting in the analysis phase. " +
             "After selecting the couple, the correlation analysis is shown below.")
-
-    create_correlation_plot(correlation_to_analyse, df_diabetes)
+    if correlation_to_analyse != 'Select a correlation':
+        create_correlation_plot(correlation_to_analyse, df_diabetes)
