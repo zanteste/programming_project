@@ -158,7 +158,7 @@ def data_analysis_section(df_diabetes):
     st.write('The type of the columns and the kind of values have been considered during data anlysis, in order to better analyse each feature of the dataset.' +
             ' There are three different types of columns in the dataset: ' + text_types_of_col_in_dataframe + '.')
     st.write('All columns of type *object* can be considered as **categorical** features, while columns of type **float64** and **int64** are numerical features. ' +
-            'The column *Pregancies* (type *float64*) during the all data analysis process is considered as a categorical value for the reasons described before.')
+            'The column *Pregnancies* (type *float64*) during the all data analysis process is considered as a categorical value for the reasons described in the "Data Exploration and Data Cleaning" section.')
 
 
     # creation of a dictionary that pairs a column with others with which is interesting to analyse correlation
@@ -183,10 +183,11 @@ def data_analysis_section(df_diabetes):
         create_distribution_plot(choosen_column, df_diabetes)
         #text_for_correlation_hypothesis(choosen_column, df_diabetes
         # list of columns for correlation with the selected column
-        if choosen_column in correlation_dictionary.keys():
+        
+        #if choosen_column in correlation_dictionary.keys():
             
             # creation of a button for each of correlation columns for the choosen_column
-            for col_corr in correlation_dictionary[choosen_column]:
-                if st.button(choosen_column + ' correlation with ' + col_corr ):
-                    create_correlation_plot(choosen_column, col_corr, df_diabetes)
-                    text_results_correlation_analysis(choosen_column, col_corr)
+            #for col_corr in correlation_dictionary[choosen_column]:
+                #if st.button(choosen_column + ' correlation with ' + col_corr ):
+                    #create_correlation_plot(choosen_column, col_corr, df_diabetes)
+                    #text_results_correlation_analysis(choosen_column, col_corr)
