@@ -176,6 +176,58 @@ def groupby_to_have_percentage_for_categories(col, col_corr, df):
     
     return df_groupby_corr
 
+
+def text_correlation_analysis(choosen_correlation):
+    if choosen_correlation == 'Age with BMI':
+        st.write("Analyzing the graph above, it's possible to notice a growth in the percentage of participants with a BMI indicator above 30 with increasing of the age, until the participants have an age smaller than 60." +
+        " The percentage of paticipants with a BMI greather than 30 decreases among the participants older than 60. Also, in the latter category it's possible to notice that there is a higher percentage of people with a BMI" + 
+        " indicator lower than 20. So, it's possible to say that older people (category *60 or older*) tend to have a lower BMI indicator: this can be caused by the fact that, in general," + 
+        " older people eat less than they did before.")
+    if choosen_correlation == 'Alcohol with BMI':
+        st.write("Analyzing the graph above, it's possible to notice that most of the participants who consume alcohol has a BMI indicator grather than 25, while those who declare to not consume alcohol " + 
+                " has a BMI indicator lower than 25, with high probability. So, it's possible to say that if a person consumes alcohol, he has a higher percentage of fat mass than a person who does not drink alcohol, " +
+                "with high probability."  )
+    if choosen_correlation == 'Alcohol with BPLevel':
+        st.write("Analyzing the graph above, it's possible to see that the percentage of participants with high blood pressure (red columns) is higher among those who declare to consume alcohol. Furthermore, " + 
+                "there are no alcohol-consuming participants that have a low blood pressure (yellow column). So, it's possible to say that who consumes alcohol has a higher risk to have high blood pressure than those "
+                + "who do not drink alcohol.")
+    if choosen_correlation == 'Alcohol with SoundSleep':
+        st.write("Analyzing the graph above, it's possible to notice that the portion where the distribution is greather than 6 (more than 6 hours of soundsleep) is bigger among the participants that consume alcohol." + 
+                " So, it's possible to say that alcohol consumption may be a cause of more soundsleep hours." )
+    if choosen_correlation == 'Alcohol with highBP':
+        st.write("Analyzing the graph above, it's possible to notice that there are more participants with high blood pressure diagnosed among those who declare to consume alcohol. Indeed. the percentage" + 
+        " for this category is 33, while it is 22 among thosee who don't drink alcohol.")
+    if choosen_correlation == 'BPLevel with Age':
+        st.write("Analyzing the graph above, it's possible to notice that the 'level' of blood pressure increases with the age of the participants. Indeed, if we consider the portion of the graph relating to those " + 
+                "who have high blood pressure we have higher percentage among the participants with an age greather than 50 (last two columns). so, it's possible to say that older people have higher probebility to have high blood pressure.")
+    if choosen_correlation == 'Gender with Alcohol':
+        st.write("Analyzing the graph above, it's possible to notice that alcohol consumption higher among males: 30% against 4% among the females.")
+    if choosen_correlation == 'Gender with BMI':
+        st.write("Analyzing the graph above, it's possible to notice that the portion where the distribution is greather than 30 (BMI is greather than 30) is bigger among females. In particular, the distribution of " + 
+                "the BMI indicator relating to males highliths that most males have an indicator less than or equal to 25. So, females participants have higher fat mass percentage with higher probability.")
+    if choosen_correlation == 'Gender with RegularMedicine':
+        st.write("Analyzing the graph above, it's possible to notice that female participants take medicine more regularly than males (red columns): 43% vs 30%.")
+    if choosen_correlation == 'Gender with Smoking':
+        st.write("Analyzing the graph above, it's possible to notice that only male participants smoke (only red column for 'male' category).")
+    if choosen_correlation == 'Gender with UrinationFreq':
+        st.write("Analyzing the graph abobe, it's possible to notice that female participants have an higher urination frequency than male participants (green column): 41% vs 23%.")
+    if choosen_correlation == 'JunkFood with Age':
+        st.write("Analyzing the graph above, it's possible to notice that the consumption of junk food is lower among older people (60 or older). Furthermore, participants who consume junk food the most " +
+                " are those with an age lower than 40.")
+    if choosen_correlation == 'JunkFood with BMI':
+        st.write("Analyzing the graph above, it's possible to notice that a high consumption of junk food does not correspond to an increase in the BMI indicator. Indeed, the differences between the four distributions" +
+                " are not so apparent.")
+    if choosen_correlation == 'PhysicallyActive with Age':
+        st.write("Analyzing the graph above, it can be seen that the level of physical activity decreases with increasing age, as everyone might expect.")
+    if choosen_correlation == 'PhysicallyActive with BMI':
+        st.write("Analyzing the graph above, it can be seen that more physical activity does not correspond to a better BMI indicator. Indeed, it seems that most of the people who do not do physical activity (none)"+
+                " have a better BMI indicator than everyone else ")
+    if choosen_correlation == 'PhysicallyActive with Gender':
+        st.write("Analyzing the graph above, it can be seen that male participants do more physical activity than females.")
+    if choosen_correlation == 'PhysicallyActive with JunkFood':
+        st.write("Everyone can think that more physical activity corresponds to a healthier life style, so it might be thought that participants who exercise more might be expected to consume less junk food." + 
+        " However by analyzing the graph above, it can be seen that participants that do one hour or more of physical activity are the ones with higher consume of junk food.")
+        
 # fucntion to create the plot used to analyse the correlation than can be choose in the sidebar
 def create_correlation_plot(choosen_correlation, df):
     if choosen_correlation != 'Sleep with SoundSleep and BMI':
@@ -200,6 +252,7 @@ def create_correlation_plot(choosen_correlation, df):
 
             fig = plt.figure(figsize=(10,6))
             g = sns.barplot(data=df_groupby, x=col1, y='Participants percentage', hue=col2, palette=colors_based_on_value)
+            g.set_title(col1 + ': correlation with column ' + col2, size=12)
             plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
             for p in g.patches:
                 g.annotate(format(p.get_height(), '.0f'),
@@ -210,3 +263,4 @@ def create_correlation_plot(choosen_correlation, df):
                         size=12)
             st.pyplot(fig)
 
+        text_correlation_analysis(choosen_correlation)
