@@ -1,7 +1,7 @@
 import types
 import pandas as pd
 import matplotlib.pyplot as plt
-from dashboard_functions import *
+from data_analysis_function import *
 
 original_dataset = pd.read_csv('data/diabetes_dataset__2019.csv')
 # applying of data cleaning functions to the original dataset
@@ -48,3 +48,5 @@ def app():
 
     st.write("In the sidebar there is a select box in which it's possible to select a correlation to see the analysis among those that were found to be most interesting in the analysis phase. " +
             "After selecting the couple, the correlation analysis is shown below.")
+
+    create_correlation_plot(correlation_to_analyse, df_diabetes)
