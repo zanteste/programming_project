@@ -47,8 +47,8 @@ def app():
     df_diabetes = replacing_null_values(df_diabetes)
 
     # Expander for getting information about how the null values have been treated
-    with st.beta_expander('Get info about cleaning of null values'):
-        col1, col2 = st.beta_columns(2)
+    with st.expander('Get info about cleaning of null values'):
+        col1, col2 = st.columns(2)
         with col1:
             choosen_column_with_nan = st.selectbox('', columns_with_nan)
         with col2:
@@ -92,7 +92,7 @@ def app():
     # list that contains the name of columns for which data cleaning is necessary
     columns_for_data_cleaning = ['RegularMedicine', 'BPLevel', 'Pdiabetes', 'Diabetic']
 
-    with st.beta_expander('Get info about how errors have been handled'):
+    with st.expander('Get info about how errors have been handled'):
         choosen_column = st.selectbox('', columns_for_data_cleaning)
         list_of_original_values = df_diabetes_no_datacleaning[choosen_column].value_counts().index.to_list()
         list_of_values_after_data_cleaning = df_diabetes[choosen_column].value_counts().index.to_list()
@@ -133,8 +133,8 @@ def app():
     # creation of two columns in order to have the selectbox and the meaning of the selected column side by side
     st.write('If you are interested in learning more about the meaning of each columns and the data you can find inside of them, click the box below.')
 
-    with st.beta_expander('Get info about columns'):
-        col1, col2 = st.beta_columns(2)
+    with st.expander('Get info about columns'):
+        col1, col2 = st.columns(2)
         with col1:
             choosen_column = st.selectbox('',columns_list)
         with col2:

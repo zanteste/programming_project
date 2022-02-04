@@ -29,7 +29,7 @@ def app():
     
 
     # get the distribution for each feature
-    with st.beta_expander('Get distribution of data for each column'):
+    with st.expander('Get distribution of data for each column'):
         st.write('**Notes about distribution plot**: for every features it has been specified a custom order of its values and a specific color for each of them.')
         choosen_column = st.selectbox('Choose a column to see its distribution', df_diabetes.columns.to_list())
         create_distribution_plot(choosen_column, df_diabetes)
@@ -44,7 +44,9 @@ def app():
                         'Sleep with SoundSleep and BMI', 'JunkFood with BMI', 'RegularMedicine with Family_Diabetes', 'RegularMedicine with JunkFood', 'RegularMedicine with Stress',
                         'RegularMedicine with BPLevel', 'RegularMedicine with UrinationFreq', 'highBP with BMI', 'highBP with Stress', 'highBP with BPLevel', 'highBP with UriantionFreq']
     correlation_list = sorted(correlation_list)
-    correlation_to_analyse = st.sidebar.selectbox('Choose a correlation to see the analysis', correlation_list)
+
+
+    correlation_to_analyse = st.sidebar.selectbox('Correlation', correlation_list)
 
     st.write("In the sidebar there is a select box in which it's possible to select a correlation to see the analysis among those that were found to be most interesting in the analysis phase. " +
             "After selecting the couple, the correlation analysis is shown below.")
