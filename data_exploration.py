@@ -1,33 +1,40 @@
-# in this file there is the code for each section of the app than can be selected in the sidebar
+import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+
 from dashboard_functions import *
 
-def exploration_data_cleaning(df_diabetes):
-    # all dataset columns in a list
-    columns_list = df_diabetes.columns.to_list()
+original_dataset = pd.read_csv('data/diabetes_dataset__2019.csv')
+
+# the original dataset is cleaned to obtain the df_diabetes
+
+def app():
+
+    st.title('Data Exploration and Data Cleaning')
+
+    # all original dataset columns in a list
+    columns_list = original_dataset.columns.to_list()
     # all columns except the last one are merged in a string
     all_columns_except_last = ', '.join(columns_list[:-1])
-
-
-    st.header('Data Exploration and Data Cleaning')
 
     # in the following text (st.write) the name of each column is shown
     st.write(
         'The columns of the diabetes dataset are the following: *' + all_columns_except_last + '* and *' + columns_list[len(columns_list)-1] + '*.' +
-        "It's possible to see that two columns have some spelling errors. They have been corrected as follows: "
+        " It's possible to see that two columns have some spelling errors. They have been corrected as follows: "
     )
     st.markdown("- *Pregancies* became *Pregnancies*; \n - *UriationFreq* became *UrinationFreq*.")
-    # renaming of Pregancies and UriationFreq
-    df_diabetes.rename(columns={'Pregancies':'Pregnancies', 'UriationFreq':'UrinationFreq'}, inplace=True)
-    # dataset columns in list after renaming the two columns before
-    columns_list = df_diabetes.columns.to_list()
 
+    # the columns Pregancies and UriationFreq are renamed
+    df_diabetes = original_dataset.rename(columns={'Pregancies':'Pregnancies', 'UriationFreq':'UrinationFreq'})
+
+    # columns_list is updated with the names of columns after the renaming operation
+    columns_list = df_diabetes.columns.to_list()
 
     # -------------------------- DATA CLEANING OF NULL VALUES ---------------------------
 
     # list of the dataset columns with null values inside
     columns_with_nan = df_diabetes.columns[df_diabetes.isna().any()].to_list()
-    # columns with nan to an unique str, in order to concatenate with the following text
+
     string_columns_with_nan = ", ".join(columns_with_nan)
     st.write("While browsing the data, it has been discovered that there were some null values in the original dataset." + 
     " In particular the null values were in the following columns: " + string_columns_with_nan + ". " + 
@@ -35,7 +42,7 @@ def exploration_data_cleaning(df_diabetes):
 
     # create copy of df_diabetes before replacing null values in order to show info about nan values
     df_diabets_with_nan = df_diabetes.copy()
-    # replacing null values in the original dataset df_diabetes
+    # replacing null values in df_diabetes
     df_diabetes = replacing_null_values(df_diabetes)
 
     # Expander for getting information about how the null values have been treated
@@ -63,7 +70,7 @@ def exploration_data_cleaning(df_diabetes):
     # --------------------------------- DATA CLEANING OF ALL COLUMNS ------------------------------------
 
     st.write('Once null values were replaced, it became necessary to correct some errors in the data. In particular, errors have been found in the following columns:' +
-    ' *RegularMedicine*, *BPLevel*, *Pdiabetes* and *Diabetic*. If you want to discover what type of errors have been found and how they have been managed click the box below.')
+    ' *RegularMedicine*, *BPLevel*, *Pdiabetes* and *Diabetic*.')
     st.write("All changes to the original dataset have been made according to  what is defined in the pdf visible by clicking on 'Show pdf' (at page 6 (711 of the original document) and 7 (712))." +
             " This pdf was written by *Neha Prerna Tigga* and *Shruti Garg*.")
 
@@ -74,16 +81,16 @@ def exploration_data_cleaning(df_diabetes):
                 pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf">'
                 st.markdown(pdf_display, unsafe_allow_html=True)
             st.write(show_pdf("1-s2.0-S1877050920308024-main.pdf"))
+    
+    st.write('If you want to discover what type of errors have been found and how they have been managed click the box below.')
     # create copy of df_diabetes before data cleaning in order to show why data cleaning is necessary
     df_diabetes_no_datacleaning = df_diabetes.copy()
     # data cleaning
-    df_diabetes = datacleaning(df_diabetes)
-
+    df_diabetes = errors_datacleaning(df_diabetes)
 
     # list that contains the name of columns for which data cleaning is necessary
     columns_for_data_cleaning = ['RegularMedicine', 'BPLevel', 'Pdiabetes', 'Diabetic']
 
-    # Expander for getting information about how errors have been handled (Data Cleaning)
     with st.beta_expander('Get info about how errors have been handled'):
         choosen_column = st.selectbox('', columns_for_data_cleaning)
         list_of_original_values = df_diabetes_no_datacleaning[choosen_column].value_counts().index.to_list()
@@ -108,11 +115,6 @@ def exploration_data_cleaning(df_diabetes):
         st.write('Once the data have been cleaned, the column *' + choosen_column + '* has the following values, as described in the pdf document:' )
         for val in list_of_values_after_data_cleaning:
             st.markdown('- ' + str(val))
-
-
-
-                    
-
 
     # dictionary contain the meaning of each columns
     meaning_of_columns = {'Age':'Age of the participants', 'Gender': 'Sex of the participants', 
@@ -144,50 +146,3 @@ def exploration_data_cleaning(df_diabetes):
                         st.write("From the above list, we can see that *" + choosen_column +'* is a numeric column.' + 
                         ' However, it can be considered, as described before, as a categorical variable since it can have only 5 different values, that can be considered ' +
                         'as five different categories for the selected column')
-
-def data_analysis_section(df_diabetes):
-    # ------------------------ DATA ANALYSIS ---------------------------
-    st.header('Data Analysis')
-    st.write('After expoliring and cleaning the original dataset, the work continued with some data analysis with the following goals:')
-    st.markdown('- analyze the main causes of diabetes;')
-    st.markdown('- correlation between each feature (column) with the target of the project (*Diabetic* column).')
-
-    # get list of all possible types in the dataset
-    types_of_col_in_dataframe = get_list_of_columns_types(df_diabetes)
-    text_types_of_col_in_dataframe = ', '.join(types_of_col_in_dataframe)
-    st.write('The type of the columns and the kind of values have been considered during data anlysis, in order to better analyse each feature of the dataset.' +
-            ' There are three different types of columns in the dataset: ' + text_types_of_col_in_dataframe + '.')
-    st.write('All columns of type *object* can be considered as **categorical** features, while columns of type **float64** and **int64** are numerical features. ' +
-            'The column *Pregnancies* (type *float64*) during the all data analysis process is considered as a categorical value for the reasons described in the "Data Exploration and Data Cleaning" section.')
-
-
-    # creation of a dictionary that pairs a column with others with which is interesting to analyse correlation
-    correlation_dictionary = {
-        'Age': ['highBP', 'PhysicallyActive', 'BMI', 'RegularMedicine', 'BPLevel', 'JunkFood', 'Stress', 'UrinationFreq'],
-        'Gender': ['Smoking', 'Alcohol', 'BMI', 'RegularMedicine', 'UrinationFreq'],
-        'PhysicallyActive': ['Age', 'BMI', 'Gender', 'JunkFood', 'UrinationFreq'],
-        'Smoking': ['Alcohol', 'Stress' ,'JunkFood'],
-        'Alcohol': ['Age', 'Gender', 'highBP', 'BMI', 'Smoking', 'SoundSleep', 'BPLevel'],
-        'Sleep': ['SoundSleep', 'BMI'],
-        'BMI': ['Sleep', 'SoundSleep'],
-        'SoundSleep': ['Sleep', 'BMI'],
-        'JunkFood': ['BMI'],
-        'RegularMedicine': ['Age', 'Family_Diabetes', 'JunkFood', 'Stress', 'BPLevel', 'UrinationFreq'],
-        'highBP': ['Age', 'BMI', 'Stress','BPLevel', 'UrinationFreq']
-    }
-
-    # expander to show distribution for each column
-    with st.beta_expander('Get distribution of data for each column'):
-        #col1, col2 = st.beta_columns(2)
-        choosen_column = st.selectbox('Choose a column to see its distribution', df_diabetes.columns.to_list())
-        create_distribution_plot(choosen_column, df_diabetes)
-        #text_for_correlation_hypothesis(choosen_column, df_diabetes
-        # list of columns for correlation with the selected column
-        
-        #if choosen_column in correlation_dictionary.keys():
-            
-            # creation of a button for each of correlation columns for the choosen_column
-            #for col_corr in correlation_dictionary[choosen_column]:
-                #if st.button(choosen_column + ' correlation with ' + col_corr ):
-                    #create_correlation_plot(choosen_column, col_corr, df_diabetes)
-                    #text_results_correlation_analysis(choosen_column, col_corr)

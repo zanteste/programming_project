@@ -40,7 +40,7 @@ def text_for_nan_cleaning(nan_column):
         return st.write('The selected column is a categorical variable, so we can substitute the null values with its most frequent value.')
        
 # function to clean errors in columns RegularMedicine, BPLevel, Pdiabetes and Diabetic
-def datacleaning(df_diabetes):
+def errors_datacleaning(df_diabetes):
     # In the column RegularMedicine there is one field valued with 'o'. The column must have values 'yes/no'.
     # The error 'o' is replaced with 'no'
     df_diabetes.loc[df_diabetes.RegularMedicine == 'o', 'RegularMedicine'] = 'no'
@@ -58,6 +58,18 @@ def datacleaning(df_diabetes):
     df_diabetes.Diabetic = df_diabetes.Diabetic.str.replace(' ', '')
 
     return df_diabetes
+
+
+# a unique function for data cleaning is created for having a unique function to call in every page of the app
+def dataset_datacleaning(df):
+    df_cleaned = df.rename(columns={'Pregancies':'Pregnancies', 'UriationFreq':'UrinationFreq'})
+
+    df_cleaned = replacing_null_values(df_cleaned)
+
+    df_cleaned = errors_datacleaning(df_cleaned)
+
+    return df_cleaned
+
 
 def text_for_description_of_columns(key, df_diabetes):
     if key == 'Pregancies':
