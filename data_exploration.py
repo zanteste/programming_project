@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import base64
 
-from dashboard_functions import *
+from data_exploration_function import *
 
 original_dataset = pd.read_csv('data/diabetes_dataset__2019.csv')
 
