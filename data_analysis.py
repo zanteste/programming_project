@@ -72,3 +72,7 @@ def app():
                 if st.button('Show correlation between Age and UrinationFreq'):
                         create_correlation_plot('Age with UrinationFreq', df_diabetes)
 
+    st.header('Analysis of diabetes causes')
+    st.write("The aim of this section of the project is to analyze the main causes of diabetes: to do so, it's important to analyze the correlations between every feature with the target feature *Diabetic*.")
+
+    st.subheader('More details about the target feature')
