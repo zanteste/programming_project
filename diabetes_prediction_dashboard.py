@@ -7,10 +7,12 @@ from multipage import MultiPage
 import data_exploration
 import data_analysis
 
-app = MultiPage()
+pages = {
+    "Data Exploration": data_exploration,
+    "Data Analysis": data_analysis
+}
 
-## adding pages to the streamlit app
-app.add_page('Data Analysis', data_analysis.app)
-app.add_page('Data Exploration and Data Cleaning', data_exploration.app)
-
-app.run()
+st.sidebar.title('Navigation')
+selection = st.sidebar.radio("Go to", list(pages.keys()))
+page = pages[selection]
+page.app()

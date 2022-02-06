@@ -23,7 +23,8 @@ def app():
     st.write('All columns of type *object* can be considered as **categorical** features, while columns of type **float64** and **int64** are numerical features. ' +
             'The column *Pregnancies* (type *float64*) during the all data analysis process is considered as a categorical variable since it admits only 5 values: from 0 to 5.')
 
-    st.header('Analysis of all features and their correlation')
+    # ---------------------- Analysis of alla features and interesting correlation
+    st.header('Analysis of all features and interesting correlations')
     st.write('First of all, we wanted to analyse the distribution of each columns and the most interesting correlations between the features of the dataset.')
     st.write("In this first part of data analysis, the target column of the project (the column *Diabetic*) it has not been considered, since every analysis with the target is presented in the next data analysis section.")
     
@@ -37,12 +38,12 @@ def app():
 
     # list that contains the indicator of all interesting correlations
     # that list is used in the sidebar selectbox
-    correlation_list = ['highBP with Age', 'PhysicallyActive with Age', 'Age with BMI', 'RegularMedicine with Age', 'BPLevel with Age', 'JunkFood with Age', 'Stress with Age',
-                        'UrinationFreq with Age', 'Gender with Smoking', 'Gender with BMI', 'Gender with Alcohol', 'Gender with RegularMedicine', 'Gender with UrinationFreq', 
-                        'PhysicallyActive with BMI', 'PhysicallyActive with Gender', 'PhysicallyActive with JunkFood', 'UrinationFreq with PhysicallyActive', 'Smoking with Alcohol',
+    correlation_list = ['highBP with Age', 'PhysicallyActive with Age', 'Age with BMI', 'RegularMedicine with Age', 'BPLevel with Age', 'JunkFood with Age', 'Age with Stress',
+                        'Age with UrinationFreq', 'Gender with Smoking', 'Gender with BMI', 'Gender with Alcohol', 'Gender with RegularMedicine', 'Gender with UrinationFreq', 
+                        'PhysicallyActive with BMI', 'PhysicallyActive with Gender', 'PhysicallyActive with JunkFood', 'Smoking with Alcohol',
                         'Stress with Smoking', 'Smoking with JunkFood', 'Alcohol with highBP', 'Alcohol with BMI', 'Alcohol with SoundSleep', 'Alcohol with BPLevel', 
                         'Sleep with SoundSleep and BMI', 'JunkFood with BMI', 'RegularMedicine with Family_Diabetes', 'RegularMedicine with JunkFood', 'RegularMedicine with Stress',
-                        'RegularMedicine with BPLevel', 'RegularMedicine with UrinationFreq', 'highBP with BMI', 'highBP with Stress', 'highBP with BPLevel', 'highBP with UriantionFreq']
+                        'RegularMedicine with BPLevel', 'RegularMedicine with UrinationFreq', 'highBP with BMI', 'highBP with Stress', 'highBP with BPLevel', 'highBP with UrinationFreq']
     correlation_list = sorted(correlation_list)
     # add a default element to list 'Select a correlation' so correlation graph is not shown automatically when the app starts
     correlation_list = ['Select a correlation'] + correlation_list
@@ -50,7 +51,24 @@ def app():
 
     correlation_to_analyse = st.sidebar.selectbox('Correlation', correlation_list)
 
-    st.write("In the sidebar there is a select box in which it's possible to select a correlation to see the analysis among those that were found to be most interesting in the analysis phase. " +
-            "After selecting the couple, the correlation analysis is shown below.")
+    st.write("Select a correlation in the box in the sidebar to see an interesting correlation.")
     if correlation_to_analyse != 'Select a correlation':
         create_correlation_plot(correlation_to_analyse, df_diabetes)
+        text_correlation_analysis(correlation_to_analyse)
+        if correlation_to_analyse == 'RegularMedicine with JunkFood':
+                if st.button('Show correlation between RegularMedicine and blood pressure level (BPLevel)'):
+                        create_correlation_plot('RegularMedicine with BPLevel', df_diabetes)
+        if correlation_to_analyse == 'RegularMedicine with UrinationFreq':
+                if st.button('Show correlation between RegularMedicine and Age'):
+                        create_correlation_plot('RegularMedicine with Age', df_diabetes)
+                if st.button('Show correlation between UrinationFreq and Age'):
+                        create_correlation_plot('Age with UrinationFreq', df_diabetes)
+        if correlation_to_analyse == 'Smoking with JunkFood':
+                if st.button('Show correlation between Smkong and Alcohol'):
+                        create_correlation_plot('Smoking with Alcohol', df_diabetes)
+        if correlation_to_analyse == 'highBP with UrinationFreq':
+                if st.button('Show correlation between highBP and Age'):
+                        create_correlation_plot('highBP with Age', df_diabetes)
+                if st.button('Show correlation between Age and UrinationFreq'):
+                        create_correlation_plot('Age with UrinationFreq', df_diabetes)
+

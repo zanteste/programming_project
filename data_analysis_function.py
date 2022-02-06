@@ -227,7 +227,50 @@ def text_correlation_analysis(choosen_correlation):
     if choosen_correlation == 'PhysicallyActive with JunkFood':
         st.write("Everyone can think that more physical activity corresponds to a healthier life style, so it might be thought that participants who exercise more might be expected to consume less junk food." + 
         " However by analyzing the graph above, it can be seen that participants that do one hour or more of physical activity are the ones with higher consume of junk food.")
-        
+    if choosen_correlation == 'RegularMedicine with Age':
+        st.write("Analyzing the graph above, it can be seen that older participants take medicine more regularly.")
+    if choosen_correlation == 'RegularMedicine with BPLevel':
+        st.write("Analyzing the graph above, it can be seen that there are more people with high blood pressure level among the participants who declare to take medicine regularly. Considering the data represented, " +
+                "we can say that having high blood pressre it's one of the main causes of taking medicine regularly.")
+    if choosen_correlation == 'RegularMedicine with Famliy_Diabetes':
+        st.write("Analyzing the graph above, it can be seen that the participants who have cases of diabetes in the family take medicine regularly with higher probability.")
+    if choosen_correlation == 'RegularMedicine with JunkFood':
+        st.write("Analyzing the graph above, it can be seen that the participants who takes medicine regularly eat less junk food. This could be caused by the fact that doctors suggested a more balanced diet when prescribing the medicines: " + 
+        " to better understand what has just ben described, it is good to consider the fact that most of those who take medicines regularly have high blood pressure which can get worse if you eat junk food." )
+    if choosen_correlation == 'RegularMedicine with Stress':
+        st.write("Analyzing the graph above, it can be see that the participants that take medicine regularly have a high level stress (*very often* or *always*) with more probability than those who " +
+                "don't take medicine.")
+    if choosen_correlation == 'RegularMedicine with UrinationFreq':
+        st.write("Analyzing the graph above, it can be seen that the participants that take medicine regularly have a high urination frequency (*quite often*) with  more probability."+
+                " This could be caused by the fact that those who tak emedicine regularly are mostly elederly people, who have a high probability of having high urination frequency." )
+    if choosen_correlation == 'Smoking with Alcohol':
+        st.write("Analyzing the graph above, it can be seen that most of the participants who smoke also consume alcohol.")
+    if choosen_correlation == 'Smoking with JunkFood':
+        st.write("Analyzing the graph above, it can be seen that who smoke have an higher junk food consumption. This can be seen as who smoke don't have a healthy life-style, above all if we consider also the fact that who smoke also consume alcohol")
+    if choosen_correlation == 'Age with Stress':
+        st.write("Analyzing the graph above, it can be seen that the level of stress increase with the age of the participants, without considering the participants older than 60. Indeed, the older participants (60 or older) have less stress than" +
+        " those with an age between 50 and 59: this could be caused by the fact that most of old people don't work anymore and everyone knows that work is one of the major causes of stress.")
+    if choosen_correlation == 'Stess with Smoking':
+        st.write("Analyzing the graph above, it can be seen that if a participant has an high level of stress (*very often* or *always*) smoke with more probability.")
+    if choosen_correlation == 'Age with UrinationFreq':
+        st.write('Analyzing the graph above, it can be seen that urination frequency is high among older people with more probability: indeed, the 47% of participants older than 60 have the highest urination frequency (**quite often**).')
+    if choosen_correlation == 'highBP with Age':
+        st.write('Analysing the graph above, it can be seen that the percentage of participants with high blood pressure diagnosed increases with the age of the participants. So, we can say that the older a person is, the more likely he is' + 
+                ' to be diagnosed with high blood pressure.')
+    if choosen_correlation == 'highBP with BMI':
+        st.write("Analyzing the graph above, it can be seen that the participants with high blood pressure diagnosed have a worst BMI distribution. Indeed, it can be seen that most of the participants with high blood pressure  " +
+                "have a BMI between 25 and 30, while most of the participants with no high blood pressure diagnosed have a BMI between 20 and 25. So, it seems that high blood pressure is one of the causes of a worst BMI. ")
+    if choosen_correlation == 'highBP with BPLevel':
+        st.write('As it can be seen in the graph above, 25% of the participants diagnosed with high blood pressure at the moment of the questionaire had a normal blood pressure, while the 6% that were diagnosed with no high' + 
+                ' blood pressure had high blood pressure when compiling the questionaire. ')
+    if choosen_correlation == 'highBP with Stress':
+        st.write("From the graph above, it's possible to see that there is an higher percentage of participants that declare the highest level of stress (always) among the ones whos has been diagnosed with high Blood Pressure")
+    if choosen_correlation == 'highBP with UrinationFreq':
+        st.write("Analyzing the graph above, it can be seen that there are more participants with high urination frequency (*quite often*) among those with high blood pressure diagnosed. This could be caused by the fact that most" + 
+                " of older participants have been diagnosed with high blood pressure and they are the category with the highest percentage of people with high urination frequency.")   
+    if choosen_correlation == 'Sleep with SoundSleep and BMI':
+        st.write("Analyzing the graph above, it can be seen that there are not so strong correlations between the features considered. The strongest correlations is between *Sleep* and *SoundSleep* with a Pearson coeffient of 0.53. " +
+                "All the others couples denote a negative correlation but not so strong.")
 # fucntion to create the plot used to analyse the correlation than can be choose in the sidebar
 def create_correlation_plot(choosen_correlation, df):
     if choosen_correlation != 'Sleep with SoundSleep and BMI':
@@ -262,5 +305,15 @@ def create_correlation_plot(choosen_correlation, df):
                         textcoords = 'offset points',
                         size=12)
             st.pyplot(fig)
+    else:
+        cols_list_for_matrix = ['Sleep', 'SoundSleep', 'BMI']
+        # dataset that contains obly the columns for the heatmap
+        df_for_heatmap = df[cols_list_for_matrix]
 
-        text_correlation_analysis(choosen_correlation)
+        # heatmap creation
+        fig = plt.figure(figsize=(10,6))
+        sns.heatmap(df_for_heatmap.corr(), annot=True, cmap='OrRd')
+
+        st.pyplot(fig)
+
+        
