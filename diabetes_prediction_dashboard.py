@@ -3,7 +3,6 @@
 from re import S
 import streamlit as st
 
-from multipage import MultiPage
 import data_exploration
 import data_analysis
 
