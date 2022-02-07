@@ -75,28 +75,6 @@ def app():
         st.header('Analysis of diabetes causes')
         st.write("The aim of this section of the project is to analyze the main causes of diabetes: to do so, it's important to analyze the correlations between every feature with the target feature *Diabetic*.")
 
-        st.subheader('More details about the target feature')
-
-        st.write('As we can see in the graph below, only 28% of the participants have diabetes.')
-
-        diabetic_values = df_diabetes.Diabetic.value_counts(normalize=True).to_frame().reset_index()
-        diabetic_values.columns = ['Diabetic', 'Participants Percentage']
-        diabetic_values['Participants Percentage'] = round(diabetic_values['Participants Percentage'] * 100,0)
-        diabetic_values = diabetic_values.sort_values(by='Participants Percentage', ascending=False)
-        
-        fig = plt.figure(figsize=(10,6))
-        g = sns.barplot(data=diabetic_values, x='Diabetic', y='Participants Percentage')
-        g.set_title('Participants distribution according to Diabetic feature')
-
-        for p in g.patches:
-                g.annotate(format(p.get_height(), '.0f'),
-                        (p.get_x()+p.get_width() /2., p.get_height()),
-                        ha = 'center', va = 'center',
-                        xytext = (0,9),
-                        textcoords = 'offset points',
-                        size=12)
-        st.pyplot(fig)
-
         st.write("In the following expander, it's possible to see the correlation between the target feature and all the others.")
 
         # all features are categorized into four different cagtegories. Each category is a list:
