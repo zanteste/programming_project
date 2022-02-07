@@ -49,7 +49,7 @@ def app():
         correlation_list = ['Select a correlation'] + correlation_list
 
 
-        correlation_to_analyse = st.sidebar.selectbox('Correlation', correlation_list)
+        correlation_to_analyse = st.sidebar.selectbox('Features Correlation', correlation_list)
 
         st.write("Select a correlation in the box in the sidebar to see an interesting correlation.")
         if correlation_to_analyse != 'Select a correlation':
