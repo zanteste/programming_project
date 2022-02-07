@@ -98,3 +98,32 @@ def app():
         st.pyplot(fig)
 
         st.write("In the following expander, it's possible to see the correlation between the target feature and all the others.")
+
+        # all features are categorized into four different cagtegories. Each category is a list:
+        general_info = ['Age', 'Gender', 'Sleep', 'SoundSleep']
+        medical_info = ['Family_Diabetes', 'Pdiabetes', 'Pregnancies', 'RegularMedicine', 'UrinationFreq']
+        health_info = ['highBP', 'BMI', 'Stress', 'BPLevel']
+        lifestyle_info = ['PhysicallyActive', 'Smoking', 'Alcohol', 'JunkFood']
+
+        # creation of a list contaings the name of the features categories. This list is used for the selectbox in the expander
+        categories_list = ['General informations', 'Medical informations', 'Health informations', 'Lifestyle informations']
+
+        with st.expander('Show analysis about the causes of diabetes'):
+                st.write('All the features in the dataset have been divided into four different categories:')
+                st.markdown('- **general informations**: *Age*, *Gender*, *Sleep* and *SoundSleep*;')
+                st.markdown('- **medical informations**: *Famyly_Diabetes*, *Pdiabates*, *Pregnancies*, *RegularMedicine*, and *UrinationFreq*;')
+                st.markdown('- **health informations**: *highBP*, *BMI*,  *Stress*, and *BPLevel*; ')
+                st.markdown('- **lifestyle informations**: *PhysicallyActive*, *Smoking*, *Alcohol* and *JunkFood*.')
+
+                st.write('Select an option below to see the analysis about diabetes causes (correlation of each feature with the target one).')
+
+                choosen_category = st.selectbox('', ['Select a category'] + categories_list)
+
+                if choosen_category == 'General informations':
+                        correlations_with_target(general_info, df_diabetes)
+                if choosen_category == 'Medical informations':
+                        correlations_with_target(medical_info, df_diabetes)
+                if choosen_category == 'Health informations':
+                        correlations_with_target(health_info, df_diabetes)
+                if choosen_category == 'Lifestyle informations':
+                        correlations_with_target(lifestyle_info, df_diabetes)

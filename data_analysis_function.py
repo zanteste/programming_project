@@ -50,6 +50,9 @@ def dataset_datacleaning(df):
 
     df_cleaned = errors_datacleaning(df_cleaned)
 
+    # changing Pregnancies type from float to object
+    df_cleaned['Pregnancies'] = df_cleaned['Pregnancies'].astype(str)
+
     return df_cleaned
 
 # function to obtain list of all column types in the dataset
@@ -108,6 +111,8 @@ def list_categorical_order(col):
         list_order_values = ['low', 'normal', 'high']
     if col == 'UrinationFreq':
         list_order_values = ['not much', 'quite often']
+    if col == 'Pregnancies':
+        list_order_values = ['0.0', '1.0', '2.0', '3.0', '4.0']
     return list_order_values
 
 def custom_order_based_on_values_one_col(col, df):
@@ -161,11 +166,11 @@ def create_distribution_plot(col, df):
 # with the ecategories of the column for which we want to analyse the correlation
 def groupby_to_have_percentage_for_categories(col, col_corr, df):
     # groupby for the column in analysis (col1)
-    df_col1_groupby = df.groupby(col).count()['Diabetic'].to_frame().reset_index()
+    df_col1_groupby = df.groupby(col).size().reset_index()
     name_column = 'Total_Participants_for_' + col + '_categories'
     df_col1_groupby.columns = [col, name_column]
     #groupby for column in analysis (col1) and the columnt choosen for correlation (col_corr)
-    df_groupby_corr = df.groupby([col, col_corr]).count()['Diabetic'].to_frame().reset_index()
+    df_groupby_corr = df.groupby([col, col_corr]).size().reset_index()
     df_groupby_corr.columns = [col, col_corr, 'Number of Participants']
     
     #add total participants for category to df_groupby_corr
@@ -315,4 +320,47 @@ def create_correlation_plot(choosen_correlation, df):
 
         st.pyplot(fig)
 
+def correlations_with_target(category_list, df):
+    # only the columns in the category_list + the feature target
+    df_category = df[category_list + ['Diabetic']]
+    if len(category_list) == 4:
+        number_rows = 2
+        number_columns = 2
+    if len(category_list) == 5:
+        number_rows = 2
+        number_columns = 3
+    
+    colors_based_on_value = color_sequence_for_graph('Diabetic')
+    if len(category_list) == 4:
+        fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10,10))
+        for j, i in enumerate(category_list):
+            if df_category[i].dtype == 'object':
+                df_perc = groupby_to_have_percentage_for_categories(i, 'Diabetic', df_category)
+                df_perc = custom_order_based_on_values_two_col(i, 'Diabetic', df_perc)
+                g = sns.barplot(data=df_perc, x=i, y='Participants percentage', hue='Diabetic', palette = colors_based_on_value, ax=axes.flat[j])
+            else:
+                g = sns.violinplot(x='Diabetic',y=i, data=df_category, palette = colors_based_on_value, ax=axes.flat[j])
+        st.pyplot(fig)
+    if len(category_list) == 5:
+        fig1, axes = plt.subplots(nrows=1, ncols=3, figsize=(10,5))
+        for j, i in enumerate(category_list[:3]):
+            if df_category[i].dtype == 'object':
+                df_perc = groupby_to_have_percentage_for_categories(i, 'Diabetic', df_category)
+                df_perc = custom_order_based_on_values_two_col(i, 'Diabetic', df_perc)
+                g = sns.barplot(data=df_perc, x=i, y='Participants percentage', hue='Diabetic', palette = colors_based_on_value, ax=axes.flat[j])
+            else:
+                g = sns.violinplot(x='Diabetic',y=i, data=df_category, palette = colors_based_on_value, ax=axes.flat[j])
+        fig2, axes = plt.subplots(nrows=1, ncols=2, figsize=(10,5))
+        for j, i in enumerate(category_list[3:]):
+            if df_category[i].dtype == 'object':
+                df_perc = groupby_to_have_percentage_for_categories(i, 'Diabetic', df_category)
+                df_perc = custom_order_based_on_values_two_col(i, 'Diabetic', df_perc)
+                g = sns.barplot(data=df_perc, x=i, y='Participants percentage', hue='Diabetic', palette = colors_based_on_value, ax=axes.flat[j])
+            else:
+                g = sns.violinplot(x='Diabetic',y=i, data=df_category, palette = colors_based_on_value, ax=axes.flat[j])
+        st.pyplot(fig1)
+        st.pyplot(fig2)
+
         
+    
+    
