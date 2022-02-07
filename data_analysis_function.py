@@ -275,7 +275,7 @@ def text_correlation_analysis(choosen_correlation):
     if choosen_correlation == 'Sleep with SoundSleep and BMI':
         st.write("Analyzing the graph above, it can be seen that there are not so strong correlations between the features considered. The strongest correlations is between *Sleep* and *SoundSleep* with a Pearson coeffient of 0.53. " +
                 "All the others couples denote a negative correlation but not so strong.")
-# fucntion to create the plot used to analyse the correlation than can be choose in the sidebar
+# function to create the plot used to analyse the correlation than can be choose in the sidebar
 def create_correlation_plot(choosen_correlation, df):
     if choosen_correlation != 'Sleep with SoundSleep and BMI':
         col1 = choosen_correlation.split(" with ")[0]
@@ -320,6 +320,7 @@ def create_correlation_plot(choosen_correlation, df):
 
         st.pyplot(fig)
 
+# function to create correlation plot for between every feature and the target feature
 def correlations_with_target(category_list, df):
     # only the columns in the category_list + the feature target
     df_category = df[category_list + ['Diabetic']]
@@ -332,14 +333,21 @@ def correlations_with_target(category_list, df):
     
     colors_based_on_value = color_sequence_for_graph('Diabetic')
     if len(category_list) == 4:
-        fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(10,10))
+        fig, axes = plt.subplots(nrows=1, ncols=4, figsize=(16,8))
         for j, i in enumerate(category_list):
             if df_category[i].dtype == 'object':
                 df_perc = groupby_to_have_percentage_for_categories(i, 'Diabetic', df_category)
                 df_perc = custom_order_based_on_values_two_col(i, 'Diabetic', df_perc)
                 g = sns.barplot(data=df_perc, x=i, y='Participants percentage', hue='Diabetic', palette = colors_based_on_value, ax=axes.flat[j])
+                g.set_xlabel('')
+                g.set_title('Diabetic correlation with ' + i)
+                if i == 'PhysicallyActive':
+                    for item in g.get_xticklabels():
+                        item.set_rotation(20)
             else:
                 g = sns.violinplot(x='Diabetic',y=i, data=df_category, palette = colors_based_on_value, ax=axes.flat[j])
+                g.set_xlabel('')
+                g.set_title('Diabetic correlation with ' + i)
         st.pyplot(fig)
     if len(category_list) == 5:
         fig1, axes = plt.subplots(nrows=1, ncols=3, figsize=(10,5))
@@ -348,8 +356,12 @@ def correlations_with_target(category_list, df):
                 df_perc = groupby_to_have_percentage_for_categories(i, 'Diabetic', df_category)
                 df_perc = custom_order_based_on_values_two_col(i, 'Diabetic', df_perc)
                 g = sns.barplot(data=df_perc, x=i, y='Participants percentage', hue='Diabetic', palette = colors_based_on_value, ax=axes.flat[j])
+                g.set_xlabel('')
+                g.set_title('Diabetic correlation with ' + i)
             else:
                 g = sns.violinplot(x='Diabetic',y=i, data=df_category, palette = colors_based_on_value, ax=axes.flat[j])
+                g.set_xlabel('')
+                g.set_title('Diabetic correlation with ' + i)
         fig2, axes = plt.subplots(nrows=1, ncols=2, figsize=(10,5))
         for j, i in enumerate(category_list[3:]):
             if df_category[i].dtype == 'object':
@@ -361,6 +373,45 @@ def correlations_with_target(category_list, df):
         st.pyplot(fig1)
         st.pyplot(fig2)
 
+# function to define text analysis for correlations with the target feature
+def text_correlations_with_target(choosen_category):
+    if choosen_category == 'General informations':
+        st.markdown('- From the first graph it can be noticed that the number of participants with diabetes is higher among older people;')
+        st.markdown("- From the second graph it's not possible to noticed a particular behavior that allows us to define whether a male is more likely to have diabetes or vice versa;")
+        st.markdown("- From the third and the fourth graph it's possible to see that the distributions regarding the amount of sleep hour and sound sleep hours have no such differences" +
+                    " as to say that a certain number of hours of sleep or soundsleep is more likely to cause diabetes among the participants.")
         
+        st.write("Concluding, it's possible to say that the age can be a determining factor for diabetes: so, the feature *Age* can be an important feature in predicting whether or not a person may have diabetes.")
+    if choosen_category == 'Medical informations':
+        st.markdown("- *Family_Diabetes*: it can be noticed that among the participants with diabetes cases in their family there is a high percentage of people with diabetes.")
+        st.markdown("- *Pdiabetes*: it can be noticed that most of the participants with gestation diabetes are diabetic. ")
+        st.markdown("- *Pregnancies*: it can be noticed that the percentage of diabetic participants increases with the number of pregnancies. In particular, it can be seen " +
+                    "all the participants with 4 participants are diabetic.")
+        st.markdown("- *RegularMedicine*: it can be noticed that about 60% of the participants that takes medicine regularly are diabetic, while there is a little number of cases" + 
+                    " among the participants that don't take medicine regularly.")
+        st.markdown("- *UrinationFreq*: it can be seen that there are more diabetic people among the participants with the highest urination frequency. However, the difference is " +
+                    " not such that it can be said that a high urination frequency indicates diabetes.")
+        
+        st.write('Concluding, *having diabetes cases in the family*, *having gestation diabetes*, *the number of pregnancies* and *taking medicine regularly* can be' +
+                'considered as causes of diabetes. So, the features *Family_Diabetes*, *Pdiabetes*, *Pregnancies* and *RegularMedicine* could have an important role' +
+                ' in predicting whether or not a person is diabetic.')
+
+    if choosen_category == 'Health informations':
+        st.markdown("- *highBP*: it can be noticed that about 60% of the participants with high blood pressure diagnosed are diabetic, while only the 20% among the others.")
+        st.markdown("- *BMI*: it can be noticed that there is a little difference between the two distributions. Most of the diabetic participants have an higher BMI.")
+        st.markdown("- *Stress*: it can be noticed that the percentage of diabetic people increases with the stress level pf the participants.")
+        st.markdown("- *BPLevel*: it can be noticed that there are no diabetic people among the participants with low blood pressure, while most of " +
+                    "the participants with high blood pressure are diabetic.")
+
+        st.write("Concluding, *having high blood pressure* and *high level of stress* could be considered as causes of diabates, while the difference noted about the BMI indicator " +
+                "is not sufficient to define BMI as a cause of diabetes. So, the features *highBP*, *Stress* and *BPLevel* could have an important role " +
+                "in predicting whether or not a person is diabetic.")
     
-    
+    if choosen_category == 'Lifestyle informations':
+        st.markdown("- *PhysicallyActive*: it can be noticed that there is a high percentage of diabetic people among the participants not physically active.")
+        st.markdown("- *Smoking*: it can be noticed that there is any behavior that allows us to define whether a smoker is more likely to be diabetic.")
+        st.markdown("- *Alcohol*: it can be noticed that there is a higher percentage of diabetic people among the participants that consume alcohol.")
+        st.markdown("- *JunkFood*: it can be noticed that there is any behavior that allows us to define if a particular level of junk food consumption can cause diabetes.")
+
+        st.write("Concluding, *not being physically active* can be a cause of being diabetic and *alcohol consumption* can be a minor cause. So, the features " + 
+                "*PhysicallyActive* and Alcohol* could have an important role in predicting whether or not a person is diabetic.")
