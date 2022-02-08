@@ -107,3 +107,30 @@ def preprocessing_data_operations(df):
     df.replace(binary_values_for_features, inplace=True)
 
     return df
+
+# functions to display old values and new values after substituting the values with binary ones
+def display_old_values_new_values_binary_op(column_binary, df_original, df_for_ml):
+    
+    # CSS to hide row index in st.table
+    hide_table_row_index = """
+            <style>
+            tbody th {display:none}
+            .blank {display:none}
+            </style>
+            """
+        
+    col1, col2 = st.columns(2)
+    with col1:
+        original_values = df_original[column_binary].value_counts().to_frame().reset_index()
+        original_values.columns = [column_binary, 'N']
+        original_values.drop(columns='N', inplace=True)
+        # applyng the css
+        st.markdown(hide_table_row_index, unsafe_allow_html=True)
+        st.table(original_values)
+    with col2: 
+        new_values = df_for_ml[column_binary].value_counts().to_frame().reset_index()
+        new_values.columns = [column_binary, 'N']
+        new_values.drop(columns='N', inplace=True)
+        # applying the css
+        st.markdown(hide_table_row_index, unsafe_allow_html=True)
+        st.table(new_values)
