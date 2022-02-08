@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
+from sklearn.preprocessing import StandardScaler
 
 # function to replace null values in the columns BMI, Pregnancies, Pdiabetes and Diabetic
 def replacing_null_values(df_diabetes):
@@ -64,3 +65,38 @@ def text_operation_needed(operation):
     if operation == 'Creating a binary column':
         st.write("It's not useful to apply the one hot encoding to categorical features with only two possible values, since after the one hot encoding process we would have some useless columns. So, we substite the original column with " +
                 "a binary one that contains only 1 or 0 values, for every categorical column with only two allowed values. ")
+
+# functions to apply the need operations in data preprocessing: data scaling, one hot encoding and creating a binary column
+def preprocessing_data_operations(df):
+    
+    # data scaling
+    features_to_be_scaled = ['BMI', 'Sleep', 'SoundSleep']
+    scaler = StandardScaler()
+
+    df[features_to_be_scaled] = scaler.fit_transform(df[features_to_be_scaled])
+
+    # finding columns that need the one hot encoding (only features with more than 2 values)
+    # and finding columns for which we only need to subsitute values with binary ones (0 and 1) --> only features with 2 values
+
+    # dropping the numeric features in order to have only categorical ones
+    df_object_columns = df.drop(columns=features_to_be_scaled)
+    df_values_for_features = df_object_columns.nunique().to_frame().reset_index()
+    df_values_for_features.columns = ['Columns', 'N_values']
+
+    # features that need the one hot encoding
+    features_one_hot = df_values_for_features[df_values_for_features.N_values > 2]['Columns'].to_list()
+    # features in whihc substitute values with binary ones
+    features_binary_columns = df_values_for_features[df_values_for_features.N_values == 2]['Columns'].to_list()
+
+    # applying one hot encoding to columns in features_one_hot
+    # use drop_first to avoid the creation of an unuseful column
+    df = pd.get_dummies(data=df, columns=features_one_hot, drop_first=False)
+
+    # substituting values with binary ones for columns in features_binary_columns
+    binary_values_for_features = {'Gender': {'Male':0, 'Female':1}, 'Family_Diabetes':{'no':0, 'yes':1}, 'highBP':{'no':0, 'yes':1}, 
+                                'Smoking':{'no':0, 'yes':1}, 'Alcohol':{'no':0, 'yes':1}, 'RegularMedicine':{'no':0, 'yes':1}, 
+                                'Pdiabetes':{'no':0, 'yes':1}, 'UrinationFreq':{'not much':0, 'quite often':1}, 'Diabetic':{'no':0, 'yes':1}}
+    
+    df.replace(binary_values_for_features, inplace=True)
+
+    return df

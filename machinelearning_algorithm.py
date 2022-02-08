@@ -15,6 +15,9 @@ def app():
     st.write("The goal of the project presented here is to predict whether or not a person has diabetes: so, it's necessary to implement a machine learning algorithm." + 
             " As described in the previous sections, the *target feature* is the *Diabetic* column: since this feature can only have two values, no (not diabetic) and yes (diabetic), it is a *classification problem*.")
 
+    
+    st.header('Data preprocessing')
+    
     st.write("Some data operations are required before running the algorithm, that are: ")
     st.markdown("- **feature scaling** for numeric features;")
     st.markdown("- **one hot encoding** for every categorical feature with more than two values;")
@@ -27,10 +30,9 @@ def app():
     with st.expander('Get info about every operations needed before running the algorithm'):
         choosen_operation = st.selectbox('', list_of_operations)
         text_operation_needed(choosen_operation)
-    
-    st.header('Data preprocessing')
-    
-    # creating a copy of original dataset. This copy is used in the machines learning algorithms
-    df_diabetes_for_ml = df_diabetes.copy()
+
+    # applyng the need preprocessing operations
+    # the new dataframe is used in the machine learning algorithms
+    df_diabetes_for_ml = preprocessing_data_operations(df_diabetes)
 
     
