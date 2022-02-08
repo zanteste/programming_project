@@ -1,3 +1,7 @@
+import pandas as pd
+import numpy as np
+import streamlit as st
+
 # function to replace null values in the columns BMI, Pregnancies, Pdiabetes and Diabetic
 def replacing_null_values(df_diabetes):
     # replace null values in the column BMI with the mode value
@@ -50,3 +54,13 @@ def dataset_datacleaning(df):
 
     return df_cleaned
 
+# function to create describing text for every operation neeed before running the algorithm 
+def text_operation_needed(operation):
+    if operation == 'Feature scaling':
+        st.write("**Feature scaling** is a method used to normalize the range of independent variables or features of data. In data processing, it is also known as data normalization and is generally performed during the data preprocessing step.")
+    if operation == 'One hot encoding':
+        st.write("**One hot encoding** is a common way of preprocessing categorical features for machine learning models. Thysi type of encoding creates a new binary feature for each possible category and assigns a value of 1 to the feature of " +
+                "each sample that corresponds to its ordinal category.")
+    if operation == 'Creating a binary column':
+        st.write("It's not useful to apply the one hot encoding to categorical features with only two possible values, since after the one hot encoding process we would have some useless columns. So, we substite the original column with " +
+                "a binary one that contains only 1 or 0 values, for every categorical column with only two allowed values. ")
