@@ -66,14 +66,11 @@ def text_operation_needed(operation):
         st.write("It's not useful to apply the one hot encoding to categorical features with only two possible values, since after the one hot encoding process we would have some useless columns. So, we substite the original column with " +
                 "a binary one that contains only 1 or 0 values, for every categorical column with only two allowed values. ")
 
-# functions to apply the need operations in data preprocessing: data scaling, one hot encoding and creating a binary column
-def preprocessing_data_operations(df):
-    
+# function to get list of columns for each data preprocessing operations: data scaling, one hot encoding and creting a binary column
+def list_of_columns_for_every_data_preprocessing_operation(df):
     # data scaling
-    features_to_be_scaled = ['BMI', 'Sleep', 'SoundSleep']
-    scaler = StandardScaler()
-
-    df[features_to_be_scaled] = scaler.fit_transform(df[features_to_be_scaled])
+    numerics = ['int64', 'float64']
+    features_to_be_scaled = df.select_dtypes(include=numerics).columns.to_list()
 
     # finding columns that need the one hot encoding (only features with more than 2 values)
     # and finding columns for which we only need to subsitute values with binary ones (0 and 1) --> only features with 2 values
@@ -88,6 +85,16 @@ def preprocessing_data_operations(df):
     # features in whihc substitute values with binary ones
     features_binary_columns = df_values_for_features[df_values_for_features.N_values == 2]['Columns'].to_list()
 
+    return features_to_be_scaled,features_one_hot,features_binary_columns
+
+# functions to apply the need operations in data preprocessing: data scaling, one hot encoding and creating a binary column
+def preprocessing_data_operations(df):
+    
+    features_to_be_scaled,features_one_hot,features_binary_columns = list_of_columns_for_every_data_preprocessing_operation(df)
+    # data scaling
+    scaler = StandardScaler()
+
+    df[features_to_be_scaled] = scaler.fit_transform(df[features_to_be_scaled])
     # applying one hot encoding to columns in features_one_hot
     # use drop_first to avoid the creation of an unuseful column
     df = pd.get_dummies(data=df, columns=features_one_hot, drop_first=False)
