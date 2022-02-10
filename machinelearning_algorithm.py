@@ -63,4 +63,12 @@ def app():
 
     st.header('Machine Learning Algorithm Results')
 
+    st.write('During data analysis, it has been shown that there are some features with a high correlation with the target feature *Diabetic*. For this reason, it has been decided to train machine learning algorithms considering all features at first and then only the features' +
+             ' with that high correlation.')
+
+    st.write('Three different classification algorithms were choosen:')
+    st.markdown('- *Support Vector Machines for classification*: SVC in Scikit-Learn library.')
+    st.markdown('- *Random Forest Classifier*: RandomForestClassifier in Scikit-Learn library.')
+    st.markdown('- *K-nearest neighbors classifier*: KNeighborsClassifier in Scikit-Learn library.')
+
     
