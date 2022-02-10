@@ -4,6 +4,9 @@ import streamlit as st
 
 from machinelearning_functions import *
 from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC # support vector machine classifier
+from sklearn.neighbors import KNeighborsClassifier as KNC 
+from sklearn.ensemble import RandomForestClassifier as RF
 
 original_dataset = pd.read_csv('data/diabetes_dataset__2019.csv')
 # applying of data cleaning functions to the original dataset
@@ -103,6 +106,10 @@ def app():
 
     accuracy_rf_all = accuracy_score(y_test, y_pred_rf)
 
+    # data about rank of features for SVC
+    svc_cols_indexes, svc_imp_indexes = rank_features(model_svc, X_train, y_train)
+    knc_cols_indexes, knc_imp_indexes = rank_features(model_knc, X_train, y_train)
+    rf_cols_indexes, rf_imp_indexes = rank_features(model_rf, X_train, y_train)
 
 
     # ----------------------- FINDING BEST PARAMS FOR MACHINE LEARNING ALGORITHM TRAINED WITH FEATURES WITH HIGHEST CORR ----------------------
@@ -141,6 +148,8 @@ def app():
     y_pred_rf = model_rf.predict(X_test)
 
     accuracy_rf_highest = accuracy_score(y_test, y_pred_rf)
+
+    
 
     # ----------- FINDING BEST PARAMS FOR MACHINE LEARNING ALGORITHM TRAINED WITH FEATURES WITH HIGHEST CORR plus FEATURES WITH GOOD CORR ------
     features_with_good_corr = ['Age', 'Family_Diabetes', 'PDiabetes', 'Pregnancies', 'RegularMedicine', 'highBP', 'Stress', 'BPLevel', 'PhysicallyActive', 'Alcohol']
@@ -185,3 +194,19 @@ def app():
     df_results = pd.DataFrame.from_dict(result_features)
 
     st.table(df_results)
+
+    st.write("From the data above, it can be seen that algorthms trained with only the features with highest correlation have the worst results, but algorithms trained with that features plus the ones " +
+            "with a good correlation have similar result to that trained with all features. In particulat, it can be noticed that, considering only K-nearest "
+            "neighbors, the algorithm trained with the portion of the features ('highest correlation plus good') have a better score than the one trained with all features.")
+
+    st.write("It can be useful understand what are the features that better predict diabetes: to do so, it's possible to rank the features using *permutation_importance* function from th *inspection* module of scikit-learn.")
+
+
+    list_of_algorithms = ['Support Vector Machine', 'K-nearest Neighbors', 'Random Forest']
+    algorithm = st.selectbox('Choose an algorithm to see the features rank', list_of_algorithms)
+    if algorithm == 'Support Vector Machine':
+        plotting_rank_features(svc_cols_indexes, svc_imp_indexes)
+    if algorithm == 'K-nearest Neighbors':
+        plotting_rank_features(knc_cols_indexes, knc_imp_indexes)
+    if algorithm == 'Random Forest':
+        plotting_rank_features(rf_cols_indexes, rf_imp_indexes)

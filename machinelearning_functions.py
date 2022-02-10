@@ -2,12 +2,13 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
+import matplotlib.pyplot as plt
+
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split as sp
-from sklearn.svm import SVC # support vector machine classifier
-from sklearn.model_selection import GridSearchCV as gs
-from sklearn.neighbors import KNeighborsClassifier as KNC
-from sklearn.ensemble import RandomForestClassifier as RF
+
+
+from sklearn.inspection import permutation_importance
 
 # function to replace null values in the columns BMI, Pregnancies, Pdiabetes and Diabetic
 def replacing_null_values(df_diabetes):
@@ -140,5 +141,27 @@ def display_old_values_new_values_binary_op(column_binary, df_original, df_for_m
         # applying the css
         st.markdown(hide_table_row_index, unsafe_allow_html=True)
         st.table(new_values)
+
+# function to get rank of fatures in machine learning algorithm
+def rank_features(model, X_train, y_train):
+    importances = permutation_importance(model, X_train, y_train, scoring='neg_mean_squared_error', n_repeats=10, 
+                       random_state=0)
+    indexes = importances.importances_mean.argsort()
+    imp_indexes = importances.importances_mean[indexes]
+
+    cols_indexes = X_train.columns[indexes]
+
+    return cols_indexes, imp_indexes
+
+def plotting_rank_features(cols_indexes, imp_indexes):
+    figure = plt.figure(figsize=(10,10))
+    plt.barh(cols_indexes, imp_indexes)
+    plt.xlabel('Importanza delle features') 
+
+    st.pyplot(figure)
+    
+figure = plt.figure(figsize=(10,10))
+
+#plt.bar_label(graph, size=12, padding=5, labels=['{:.2}'.format(a) for a in imp_indexes])
 
 
