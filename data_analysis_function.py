@@ -324,12 +324,6 @@ def create_correlation_plot(choosen_correlation, df):
 def correlations_with_target(category_list, df):
     # only the columns in the category_list + the feature target
     df_category = df[category_list + ['Diabetic']]
-    if len(category_list) == 4:
-        number_rows = 2
-        number_columns = 2
-    if len(category_list) == 5:
-        number_rows = 2
-        number_columns = 3
     
     colors_based_on_value = color_sequence_for_graph('Diabetic')
     if len(category_list) == 4:
@@ -340,14 +334,14 @@ def correlations_with_target(category_list, df):
                 df_perc = custom_order_based_on_values_two_col(i, 'Diabetic', df_perc)
                 g = sns.barplot(data=df_perc, x=i, y='Participants percentage', hue='Diabetic', palette = colors_based_on_value, ax=axes.flat[j])
                 g.set_xlabel('')
-                g.set_title('Diabetic correlation with ' + i)
+                g.set_title('Diabetic correlation with ' + i, fontsize=8)
                 if i == 'PhysicallyActive':
                     for item in g.get_xticklabels():
                         item.set_rotation(20)
             else:
                 g = sns.violinplot(x='Diabetic',y=i, data=df_category, palette = colors_based_on_value, ax=axes.flat[j])
                 g.set_xlabel('')
-                g.set_title('Diabetic correlation with ' + i)
+                g.set_title('Diabetic correlation with ' + i, fontsize=8)
         st.pyplot(fig)
     if len(category_list) == 5:
         fig1, axes = plt.subplots(nrows=1, ncols=3, figsize=(10,5))
@@ -357,17 +351,18 @@ def correlations_with_target(category_list, df):
                 df_perc = custom_order_based_on_values_two_col(i, 'Diabetic', df_perc)
                 g = sns.barplot(data=df_perc, x=i, y='Participants percentage', hue='Diabetic', palette = colors_based_on_value, ax=axes.flat[j])
                 g.set_xlabel('')
-                g.set_title('Diabetic correlation with ' + i)
+                g.set_title('Diabetic correlation with ' + i, fontsize=8)
             else:
                 g = sns.violinplot(x='Diabetic',y=i, data=df_category, palette = colors_based_on_value, ax=axes.flat[j])
                 g.set_xlabel('')
-                g.set_title('Diabetic correlation with ' + i)
+                g.set_title('Diabetic correlation with ' + i, fontsize=8)
         fig2, axes = plt.subplots(nrows=1, ncols=2, figsize=(10,5))
         for j, i in enumerate(category_list[3:]):
             if df_category[i].dtype == 'object':
                 df_perc = groupby_to_have_percentage_for_categories(i, 'Diabetic', df_category)
                 df_perc = custom_order_based_on_values_two_col(i, 'Diabetic', df_perc)
                 g = sns.barplot(data=df_perc, x=i, y='Participants percentage', hue='Diabetic', palette = colors_based_on_value, ax=axes.flat[j])
+                g.set_title('Diabetic correlation with ' + i, fontsize=8)
             else:
                 g = sns.violinplot(x='Diabetic',y=i, data=df_category, palette = colors_based_on_value, ax=axes.flat[j])
         st.pyplot(fig1)
@@ -414,4 +409,4 @@ def text_correlations_with_target(choosen_category):
         st.markdown("- *JunkFood*: it can be noticed that there is any behavior that allows us to define if a particular level of junk food consumption can cause diabetes.")
 
         st.write("Concluding, *not being physically active* can be a cause of being diabetic and *alcohol consumption* can be a minor cause. So, the features " + 
-                "*PhysicallyActive* and Alcohol* could have an important role in predicting whether or not a person is diabetic.")
+                "*PhysicallyActive* and *Alcohol* could have an important role in predicting whether or not a person is diabetic.")

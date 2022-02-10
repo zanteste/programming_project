@@ -60,3 +60,7 @@ def app():
         if choosen_operation == 'Creating a binary column':
             column_binary = st.selectbox('Select a column to see how its values changed', features_binary_columns)
             display_old_values_new_values_binary_op(column_binary, df_diabetes, df_diabetes_for_ml)
+
+    st.header('Machine Learning Algorithm Results')
+
+    
