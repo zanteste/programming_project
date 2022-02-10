@@ -107,3 +107,5 @@ def app():
                         correlations_with_target(lifestyle_info, df_diabetes)
                 
                 text_correlations_with_target(choosen_category)
+
+        
