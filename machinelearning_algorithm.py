@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 
 from machinelearning_functions import *
-
+from sklearn.metrics import accuracy_score
 
 original_dataset = pd.read_csv('data/diabetes_dataset__2019.csv')
 # applying of data cleaning functions to the original dataset
@@ -66,9 +66,122 @@ def app():
     st.write('During data analysis, it has been shown that there are some features with a high correlation with the target feature *Diabetic*. For this reason, it has been decided to train machine learning algorithms considering all features at first and then only the features' +
              ' with that high correlation.')
 
+    st.write('The features with the highest correlation with the *Diabetic* column are the following: *Age*, *Family_Diabetes*, *PDiabetes*, *Pregnancies*, *RegularMedicine*, *highBP*, *Stress* *BPLevel*. In addition, there are two more features with a good correlation: *PhysicallyActive* and *Alcohol*.')
+
+    st.write('So, machine learning algorithmss were trained considering: (1) all features, (2) only features with highest correlation features and (3) features with highest correlation plus the two with a good correlation.')
+
     st.write('Three different classification algorithms were choosen:')
     st.markdown('- *Support Vector Machines for classification*: SVC in Scikit-Learn library.')
     st.markdown('- *Random Forest Classifier*: RandomForestClassifier in Scikit-Learn library.')
     st.markdown('- *K-nearest neighbors classifier*: KNeighborsClassifier in Scikit-Learn library.')
 
-    
+    # -----------------------  MACHINE LEARNING ALGORITHM TRAINED WITH ALL FEATURES ----------------------
+        # separating all features from the target one
+    X = df_diabetes_for_ml.loc[:, df_diabetes_for_ml.columns != 'Diabetic']
+    y = df_diabetes_for_ml['Diabetic']
+        # splitting X and y in train and test df
+    X_train, X_test, y_train, y_test = sp(X,y, test_size=0.20, random_state=0)
+
+    # Support Vector Machine Classifier
+    model_svc = SVC()
+    model_svc.fit(X_train, y_train)
+    y_pred_svc = model_svc.predict(X_test)
+
+    accuracy_svc_all = accuracy_score(y_test, y_pred_svc)
+
+    # K-nearest Neighbors 
+    model_knc = KNC()
+    model_knc.fit(X_train, y_train)
+    y_pred_knc = model_knc.predict(X_test)
+
+    accuracy_knc_all = accuracy_score(y_test, y_pred_knc)
+
+    # Random Forest
+    model_rf = RF()
+    model_rf.fit(X_train, y_train)
+    y_pred_rf = model_rf.predict(X_test)
+
+    accuracy_rf_all = accuracy_score(y_test, y_pred_rf)
+
+
+
+    # ----------------------- FINDING BEST PARAMS FOR MACHINE LEARNING ALGORITHM TRAINED WITH FEATURES WITH HIGHEST CORR ----------------------
+    features_with_highest_corr = ['Age', 'Family_Diabetes', 'PDiabetes', 'Pregnancies', 'RegularMedicine', 'highBP', 'Stress', 'BPLevel']
+    columns_with_highest = []
+    for col in features_with_highest_corr:
+        for column_all in df_diabetes_for_ml.columns.to_list():
+            if col in column_all:
+                columns_with_highest.append(column_all)
+
+        # dataframe with highest features plus diabetic
+    df_highest = df_diabetes_for_ml[columns_with_highest + ['Diabetic']]
+        # separating all features from the target one
+    X = df_highest.loc[:, df_highest.columns != 'Diabetic']
+    y = df_highest['Diabetic']
+        # splitting X and y in train and test df
+    X_train, X_test, y_train, y_test = sp(X,y, test_size=0.20, random_state=0)
+
+     # Support Vector Machine Classifier
+    model_svc = SVC()
+    model_svc.fit(X_train, y_train)
+    y_pred_svc = model_svc.predict(X_test)
+
+    accuracy_svc_highest = accuracy_score(y_test, y_pred_svc)
+
+    # K-nearest Neighbors 
+    model_knc = KNC()
+    model_knc.fit(X_train, y_train)
+    y_pred_knc = model_knc.predict(X_test)
+
+    accuracy_knc_highest = accuracy_score(y_test, y_pred_knc)
+
+    # Random Forest
+    model_rf = RF()
+    model_rf.fit(X_train, y_train)
+    y_pred_rf = model_rf.predict(X_test)
+
+    accuracy_rf_highest = accuracy_score(y_test, y_pred_rf)
+
+    # ----------- FINDING BEST PARAMS FOR MACHINE LEARNING ALGORITHM TRAINED WITH FEATURES WITH HIGHEST CORR plus FEATURES WITH GOOD CORR ------
+    features_with_good_corr = ['Age', 'Family_Diabetes', 'PDiabetes', 'Pregnancies', 'RegularMedicine', 'highBP', 'Stress', 'BPLevel', 'PhysicallyActive', 'Alcohol']
+    columns_with_good = []
+    for col in features_with_good_corr:
+        for column_all in df_diabetes_for_ml.columns.to_list():
+            if col in column_all:
+                columns_with_good.append(column_all)
+        # dataframe with highest features plus diabetic
+    df_good = df_diabetes_for_ml[columns_with_good + ['Diabetic']]
+        # separating all features from the target one
+    X = df_good.loc[:, df_good.columns != 'Diabetic']
+    y = df_good['Diabetic']
+        # splitting X and y in train and test df
+    X_train, X_test, y_train, y_test = sp(X,y, test_size=0.20, random_state=0)
+
+    # Support Vector Machine Classifier
+    model_svc = SVC()
+    model_svc.fit(X_train, y_train)
+    y_pred_svc = model_svc.predict(X_test)
+
+    accuracy_svc_good = accuracy_score(y_test, y_pred_svc)
+
+    # K-nearest Neighbors 
+    model_knc = KNC()
+    model_knc.fit(X_train, y_train)
+    y_pred_knc = model_knc.predict(X_test)
+
+    accuracy_knc_good = accuracy_score(y_test, y_pred_knc)
+
+    # Random Forest
+    model_rf = RF()
+    model_rf.fit(X_train, y_train)
+    y_pred_rf = model_rf.predict(X_test)
+
+    accuracy_rf_good = accuracy_score(y_test, y_pred_rf)
+
+    # creating dataframe creating all results
+    result_features = {'Algorithm': ['Support Vector', 'K-nearest Neighbors', 'Random Forest'], 'Accuracy Results All':[accuracy_svc_all, accuracy_knc_all, accuracy_rf_all], 
+                        'Accuracy Results Features Highest Correlation': [accuracy_svc_highest, accuracy_knc_highest, accuracy_rf_highest], 'Accuracy Results Features Highest Correlation Plus Good':[accuracy_svc_good, accuracy_knc_good, accuracy_rf_good]}
+
+    df_results = pd.DataFrame.from_dict(result_features)
+
+    st.table(df_results)

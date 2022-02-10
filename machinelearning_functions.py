@@ -1,7 +1,13 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
+
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split as sp
+from sklearn.svm import SVC # support vector machine classifier
+from sklearn.model_selection import GridSearchCV as gs
+from sklearn.neighbors import KNeighborsClassifier as KNC
+from sklearn.ensemble import RandomForestClassifier as RF
 
 # function to replace null values in the columns BMI, Pregnancies, Pdiabetes and Diabetic
 def replacing_null_values(df_diabetes):
@@ -134,3 +140,90 @@ def display_old_values_new_values_binary_op(column_binary, df_original, df_for_m
         # applying the css
         st.markdown(hide_table_row_index, unsafe_allow_html=True)
         st.table(new_values)
+
+# function to get best params for every machine learning algorithm choosen
+def get_best_params(X_train, y_train):
+
+    # support vector machine classifier
+    supportvector = SVC()
+        # defining a range to find best params
+    possible_C = np.logspace(-1,2,4)
+    possible_Gamma = np.logspace(-4,2,7)
+    possible_degree = np.arange(2,5)
+
+    params = [{'kernel':['linear'], 'C':possible_C},{'kernel':['rbf'], 'C': possible_C, 'gamma': possible_Gamma},
+              {'kernel':['poly'], 'C':possible_C, 'degree':possible_degree}]
+
+        # finding best params
+    
+    grid_svc = gs(supportvector, params, verbose=50, scoring='accuracy', n_jobs=1)
+
+    grid_svc = grid_svc.fit(X_train, y_train)
+
+    svc_best_params = grid_svc.best_params_
+
+    # KNeighborsClassifier
+    kneighbors = KNC()
+        # defining a range to find best params
+    params = [
+        {'algorithm':['ball_tree'], 'n_neighbors': [5,10,15], 'leaf_size':[15,30,45]},
+        {'algorithm':['kd_tree'], 'n_neighbors':[5,10,15], 'leaf_size':[15,30,45]},
+    ]
+        # finding best params
+    
+    grid_knc = gs(kneighbors, params, verbose=50, scoring='accuracy', n_jobs=1)
+
+    grid_knc = grid_knc.fit(X_train, y_train)
+
+    grid_knc = grid_knc.best_params_
+
+    # Random Forest Classifier
+    random = RF()
+        # defining a range to find best params
+    possible_n_estimators = [25,50,75,100]
+    params = [
+        {'criterion':['gini'], 'n_estimators': possible_n_estimators, 'max_features':['auto']},
+        {'criterion':['gini'], 'n_estimators': possible_n_estimators, 'max_features':['sqrt']},
+        {'criterion':['gini'], 'n_estimators': possible_n_estimators, 'max_features':['log2']},
+        {'criterion':['entropy'], 'n_estimators': possible_n_estimators, 'max_features':['auto']},
+        {'criterion':['entropy'], 'n_estimators': possible_n_estimators, 'max_features':['sqrt']},
+        {'criterion':['entropy'], 'n_estimators': possible_n_estimators, 'max_features':['log2']}
+    ]
+
+    grid_random = gs(random, params, verbose=50, scoring='accuracy', n_jobs=1)
+
+    grid_random = grid_random.fit(X_train, y_train)
+
+    grid_random = grid_random.best_params_
+
+
+    return grid_svc, grid_knc, grid_random
+
+
+
+
+# functions to implement machine learning algorithms
+def machine_learning_algorithms(df):
+    # separating all the feature from the target one
+    X = df.loc[:, df.columns != 'Diabetic']
+    y = df['Diabetic']
+
+    # splitting the data in train and test dataframes
+    X_train, X_test, y_train, y_test = sp(X,y, test_size=0.20, random_state=0)
+
+    # support vector machine classifier
+    supportvector = SVC()
+        # defining a range to find best params
+    possible_C = np.logspace(-1,2,4)
+    possible_Gamma = np.logspace(-4,2,7)
+    possible_degree = np.arange(2,5)
+
+    params = [{'kernel':['linear'], 'C':possible_C},{'kernel':['rbf'], 'C': possible_C, 'gamma': possible_Gamma},
+              {'kernel':['poly'], 'C':possible_C, 'degree':possible_degree}]
+    
+    grid_svc = gs(supportvector, params, verbose=50, scoring='accuracy', n_jobs=1)
+
+    grid_svc = grid_svc.fit(X_train, y_train)
+
+
+
