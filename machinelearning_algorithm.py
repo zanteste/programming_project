@@ -199,7 +199,7 @@ def app():
             "with a good correlation have similar result to that trained with all features. In particulat, it can be noticed that, considering only K-nearest "
             "neighbors, the algorithm trained with the portion of the features ('highest correlation plus good') have a better score than the one trained with all features.")
 
-    st.write("It can be useful understand what are the features that better predict diabetes: to do so, it's possible to rank the features using *permutation_importance* function from th *inspection* module of scikit-learn.")
+    st.write("It can be useful understand what are the features that better predict diabetes: to do so, it's possible to rank the features using *permutation_importance* function from th *inspection* module of scikit-learn.t")
 
 
     list_of_algorithms = ['Support Vector Machine', 'K-nearest Neighbors', 'Random Forest']
