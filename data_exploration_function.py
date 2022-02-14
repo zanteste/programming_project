@@ -27,7 +27,7 @@ def text_for_nan_cleaning(nan_column):
         return st.write('Since the distribution of the values of the column called ' + nan_column + 
                     ' is not a normal distribution, the null values were substituted with the mode value of the column.')
     if (nan_column == 'Pregnancies') :
-        return st.write('The selected column can be considered as a categorical column with 5 values(from 0 to 4),' + 
+        return st.write('The selected column can be considered as a categorical column with 5 values (from 0 to 4), so ' + 
                     'the null values were substitued with the most frequent value.')
     if nan_column == 'Diabetic':
         return st.write('Since, one goal of the project presented here is to predict if a person has diabetes or not, the selected column is the target of the project. ' + 

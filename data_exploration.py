@@ -23,7 +23,7 @@ def app():
         'The columns of the diabetes dataset are the following: *' + all_columns_except_last + '* and *' + columns_list[len(columns_list)-1] + '*.' +
         " It's possible to see that two columns have some spelling errors. They have been corrected as follows: "
     )
-    st.markdown("- *Pregancies* became *Pregnancies*; \n - *UriationFreq* became *UrinationFreq*.")
+    st.markdown("- *Pregancies* becomes *Pregnancies*; \n - *UriationFreq* becomes *UrinationFreq*.")
 
     # the columns Pregancies and UriationFreq are renamed
     df_diabetes = original_dataset.rename(columns={'Pregancies':'Pregnancies', 'UriationFreq':'UrinationFreq'})
@@ -104,11 +104,11 @@ def app():
                     "So, data cleaning operations for the selected column had the goal to substitute the *'o'* values with the expected value.")
         if choosen_column == 'BPLevel':
             st.write("It's possible to see that there were some rows with lowercase first letter and others with uppercase first letter." +
-                    'Since the original data (in the PDF above) are with lowercase first letter, data cleaning operations have modified the fields with uppercase first letter.' +
+                    ' Since the original data (in the PDF above) are with lowercase first letter, data cleaning operations have modified the fields with uppercase first letter.' +
                     ' Furthermore, there is a row in which the *' + choosen_column + '* column is enhanced with a space inside: that space has been removed.')
         if choosen_column == 'Pdiabetes':
-            st.write('Accordin to the pdf, *' + choosen_column + "* column can only have two values: *'yes'* or 'no'. From the list above,"+ 
-                    " it's possible to see that in the original dataset there is an unwanted value: '0'. That value has been substituted with 'no'," + 
+            st.write('According to the pdf, *' + choosen_column + "* column can only have two values: *'yes'* or '*no*'. From the list above,"+ 
+                    " it's possible to see that in the original dataset there is an unwanted value: '0'. That value has been substituted with 'no', " + 
                     "as '0' can be seen as the case in which a person has not diabetes gestation.")
         if choosen_column == 'Diabetic':
             st.write("It's possible to see that there are two kinds of 'no' in the original data: the reason is that there is a row with a space in it." +
@@ -121,7 +121,7 @@ def app():
     meaning_of_columns = {'Age':'Age of the participants', 'Gender': 'Sex of the participants', 
                             'Family_Diabetes':'It indicates if there were diabetes cases in the family of the participants.', 
                             'highBP':'It indicates if a participant was diagnosed with high blook pressure', 'PhysicallyActive': 'It indicates how much physical activity a participant does',
-                        'BMI':'Body mass (fat) index of the participant', 'Smoking': "It denotes if a participant smokes or doesn't", 'Alcohol':'It indicates if a participant consumes alcohol or not', 
+                        'BMI':'Body mass (fat) index of a participant', 'Smoking': "It denotes if a participant smokes or doesn't", 'Alcohol':'It indicates if a participant consumes alcohol or not', 
                         'Sleep':'It indicates how much a participant sleeps', 'SoundSleep':'It indicates the amount of hours of sound sleep', 
                         'RegularMedicine':'It indicates if a participant takes medicines regularly or not',
                         'JunkFood':'It indicates if a participant consumes a junk food or not','Stress':'It indicates the level of stress of the participants', 
@@ -146,4 +146,4 @@ def app():
                     if key == 'Pregnancies':
                         st.write("From the above list, we can see that *" + choosen_column +'* is a numeric column.' + 
                         ' However, it can be considered, as described before, as a categorical variable since it can have only 5 different values, that can be considered ' +
-                        'as five different categories for the selected column')
+                        'as five different categories for the selected column.')

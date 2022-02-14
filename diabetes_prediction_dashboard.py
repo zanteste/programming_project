@@ -14,7 +14,7 @@ pages = {
     "Diabetes Prediction": machinelearning_algorithm
 }
 
-st.sidebar.title('Navigation')
+st.sidebar.title('Menu')
 selection = st.sidebar.radio("Go to", list(pages.keys()))
 page = pages[selection]
 page.app()
