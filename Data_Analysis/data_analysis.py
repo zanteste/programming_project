@@ -1,4 +1,3 @@
-import types
 import pandas as pd
 import matplotlib.pyplot as plt
 from Data_Analysis.data_analysis_function import *
