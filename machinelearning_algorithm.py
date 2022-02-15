@@ -3,10 +3,6 @@ import pandas as pd
 import streamlit as st
 
 from machinelearning_functions import *
-from sklearn.metrics import accuracy_score
-from sklearn.svm import SVC # support vector machine classifier
-from sklearn.neighbors import KNeighborsClassifier as KNC 
-from sklearn.ensemble import RandomForestClassifier as RF
 
 original_dataset = pd.read_csv('data/diabetes_dataset__2019.csv')
 # applying of data cleaning functions to the original dataset
@@ -59,7 +55,8 @@ def app():
 
                     st.markdown('- *'+col+'*')
             
-            st.write('Every column can have **0** or **1** as values: the value *1* indicates that a participant age is in the range indicated in the name of the new column.')
+            st.write('Every column can have **0** or **1** as values.')
+
         if choosen_operation == 'Creating a binary column':
             column_binary = st.selectbox('Select a column to see how its values changed', features_binary_columns)
             display_old_values_new_values_binary_op(column_binary, df_diabetes, df_diabetes_for_ml)
@@ -69,144 +66,103 @@ def app():
     st.write('During data analysis, it has been shown that there are some features with a high correlation with the target feature *Diabetic*. For this reason, it has been decided to train machine learning algorithms considering all features at first and then only the features' +
              ' with that high correlation.')
 
-    st.write('The features with the highest correlation with the *Diabetic* column are the following: *Age*, *Family_Diabetes*, *PDiabetes*, *Pregnancies*, *RegularMedicine*, *highBP*, *Stress* *BPLevel*. In addition, there are two more features with a good correlation: *PhysicallyActive* and *Alcohol*.')
+    st.write('The features with the highest correlation with the *Diabetic* column are the following: *Age*, *Family_Diabetes*, *PDiabetes*, *Pregnancies*, *RegularMedicine*, *highBP*, *Stress* *BPLevel*. ')
 
-    st.write('So, machine learning algorithmss were trained considering: (1) all features, (2) only features with highest correlation features and (3) features with highest correlation plus the two with a good correlation.')
+    st.write('So, machine learning algorithms were trained considering: (1) all features of the original dataaset and (2) only features with highest correlation with the target column.')
 
     st.write('Three different classification algorithms were choosen:')
     st.markdown('- *Support Vector Machines for classification*: SVC in Scikit-Learn library.')
     st.markdown('- *Random Forest Classifier*: RandomForestClassifier in Scikit-Learn library.')
     st.markdown('- *K-nearest neighbors classifier*: KNeighborsClassifier in Scikit-Learn library.')
 
-    # -----------------------  MACHINE LEARNING ALGORITHM TRAINED WITH ALL FEATURES ----------------------
-        # separating all features from the target one
-    X = df_diabetes_for_ml.loc[:, df_diabetes_for_ml.columns != 'Diabetic']
-    y = df_diabetes_for_ml['Diabetic']
-        # splitting X and y in train and test df
-    X_train, X_test, y_train, y_test = sp(X,y, test_size=0.20, random_state=0)
+    # -----------------------  MACHINE LEARNING ALGORITHMS TRAINING ----------------------
 
-    # Support Vector Machine Classifier
-    model_svc = SVC()
-    model_svc.fit(X_train, y_train)
-    y_pred_svc = model_svc.predict(X_test)
-
-    accuracy_svc_all = accuracy_score(y_test, y_pred_svc)
-
-    # K-nearest Neighbors 
-    model_knc = KNC()
-    model_knc.fit(X_train, y_train)
-    y_pred_knc = model_knc.predict(X_test)
-
-    accuracy_knc_all = accuracy_score(y_test, y_pred_knc)
-
-    # Random Forest
-    model_rf = RF()
-    model_rf.fit(X_train, y_train)
-    y_pred_rf = model_rf.predict(X_test)
-
-    accuracy_rf_all = accuracy_score(y_test, y_pred_rf)
-
-    # data about rank of features for SVC
-    svc_cols_indexes, svc_imp_indexes = rank_features(model_svc, X_train, y_train)
-    knc_cols_indexes, knc_imp_indexes = rank_features(model_knc, X_train, y_train)
-    rf_cols_indexes, rf_imp_indexes = rank_features(model_rf, X_train, y_train)
-
-
-    # ----------------------- FINDING BEST PARAMS FOR MACHINE LEARNING ALGORITHM TRAINED WITH FEATURES WITH HIGHEST CORR ----------------------
+    # two different datasets are needed: one with all feature (df_diabetes_for_ml) and an other one with only features with highest correlation
+    # so next, the second dataframe is created
     features_with_highest_corr = ['Age', 'Family_Diabetes', 'PDiabetes', 'Pregnancies', 'RegularMedicine', 'highBP', 'Stress', 'BPLevel']
+
+    # since data preprocessing operations (feature scaling, one hot encoding and creation of a binary column) changed the name of columns
+    # we need to take the column from the full dataset (df_diabetes_for_ml) that contains the name of the features contained in the
+    # list named 'features_with_highest_corr'
     columns_with_highest = []
     for col in features_with_highest_corr:
-        for column_all in df_diabetes_for_ml.columns.to_list():
-            if col in column_all:
-                columns_with_highest.append(column_all)
-
-        # dataframe with highest features plus diabetic
+        for column_for_ml in df_diabetes_for_ml.columns.to_list():
+            if col in column_for_ml:
+                columns_with_highest.append(column_for_ml)
+    
+    # creation of the dataset containing only the columns referred to the features with highest correlation
+    # the target feature 'Diabetic' is added to the list columns_with_highest
     df_highest = df_diabetes_for_ml[columns_with_highest + ['Diabetic']]
-        # separating all features from the target one
-    X = df_highest.loc[:, df_highest.columns != 'Diabetic']
-    y = df_highest['Diabetic']
-        # splitting X and y in train and test df
-    X_train, X_test, y_train, y_test = sp(X,y, test_size=0.20, random_state=0)
 
-     # Support Vector Machine Classifier
-    model_svc = SVC()
-    model_svc.fit(X_train, y_train)
-    y_pred_svc = model_svc.predict(X_test)
+    # for the training of machine learning algorithm it's need to divide the dataset (df_highest or df_diabetes_for_ml) into two different datasets
+    # one containing all features except the target one and one containing only the target feature
 
-    accuracy_svc_highest = accuracy_score(y_test, y_pred_svc)
+    # dividing full dataset (df_diabetes_for_ml)
+    X_full = df_diabetes_for_ml.loc[:, df_diabetes_for_ml.columns != 'Diabetic']
+    y_full = df_diabetes_for_ml['Diabetic']
 
-    # K-nearest Neighbors 
-    model_knc = KNC()
-    model_knc.fit(X_train, y_train)
-    y_pred_knc = model_knc.predict(X_test)
+    # dividing dataset with features with highest correlation (df_highest)
+    X_highest = df_highest.loc[:, df_highest.columns != 'Diabetic']
+    y_highest = df_highest['Diabetic']
 
-    accuracy_knc_highest = accuracy_score(y_test, y_pred_knc)
+    if st.button('Show results for Support Vector Classification'):
+        # training with all features
+        accuracy_svc_all, training_time_all, cols_indexes, imp_indexes = train_machine_learning_algorithm(X_full, y_full, 'support_vector', 'all')
+        # training with only features with highest correlation
+        accuracy_svc_highest, training_time_highest = train_machine_learning_algorithm(X_highest, y_highest,  'support_vector', 'highest')
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write('Accuracy with all features: ')
+            st.markdown('- ' + str(round(accuracy_svc_all,2)))
+            st.write('Training time with all features: ')
+            st.markdown('- ' + str(training_time_all))
+        with col2:
+            st.write('Accuracy with features with highest correlation: ')
+            st.markdown('- ' + str(round(accuracy_svc_highest,2)))
+            st.write('Training time with features with\ highest features: ')
+            st.markdown('- ' + str(training_time_highest))
 
-    # Random Forest
-    model_rf = RF()
-    model_rf.fit(X_train, y_train)
-    y_pred_rf = model_rf.predict(X_test)
+        st.write("In the graph below, it can be seen what are the features that better predict diabetes: ")
+        plotting_rank_features(cols_indexes, imp_indexes)
+    
+    if st.button('Show results for K-nearest Neighbors'):
+        # training with all features
+        accuracy_svc_all, training_time_all, cols_indexes, imp_indexes = train_machine_learning_algorithm(X_full, y_full, 'k-nearest', 'all')
+        # training with only features with highest correlation
+        accuracy_svc_highest, training_time_highest = train_machine_learning_algorithm(X_highest, y_highest,  'k-nearest', 'highest')
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write('Accuracy with all features: ')
+            st.markdown('- ' + str(round(accuracy_svc_all,2)))
+            st.write('Training time with all features: ')
+            st.markdown('- ' + str(training_time_all))
+        with col2:
+            st.write('Accuracy with features with highest correlation: ')
+            st.markdown('- ' + str(round(accuracy_svc_highest,2)))
+            st.write('Training time with features with\ highest features: ')
+            st.markdown('- ' + str(training_time_highest))
 
-    accuracy_rf_highest = accuracy_score(y_test, y_pred_rf)
+        st.write("In the graph below, it can be seen what are the features that better predict diabetes: ")
+        plotting_rank_features(cols_indexes, imp_indexes)
+    
+    if st.button('Show results for Random Forest'):
+        # training with all features
+        accuracy_svc_all, training_time_all, cols_indexes, imp_indexes = train_machine_learning_algorithm(X_full, y_full, 'random', 'all')
+        # training with only features with highest correlation
+        accuracy_svc_highest, training_time_highest = train_machine_learning_algorithm(X_highest, y_highest,  'random', 'highest')
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write('Accuracy with all features: ')
+            st.markdown('- ' + str(round(accuracy_svc_all,2)))
+            st.write('Training time with all features: ')
+            st.markdown('- ' + str(training_time_all))
+        with col2:
+            st.write('Accuracy with features with highest correlation: ')
+            st.markdown('- ' + str(round(accuracy_svc_highest,2)))
+            st.write('Training time with features with\ highest features: ')
+            st.markdown('- ' + str(training_time_highest))
+
+        st.write("In the graph below, it can be seen what are the features that better predict diabetes: ")
+        plotting_rank_features(cols_indexes, imp_indexes)
 
     
-
-    # ----------- FINDING BEST PARAMS FOR MACHINE LEARNING ALGORITHM TRAINED WITH FEATURES WITH HIGHEST CORR plus FEATURES WITH GOOD CORR ------
-    features_with_good_corr = ['Age', 'Family_Diabetes', 'PDiabetes', 'Pregnancies', 'RegularMedicine', 'highBP', 'Stress', 'BPLevel', 'PhysicallyActive', 'Alcohol']
-    columns_with_good = []
-    for col in features_with_good_corr:
-        for column_all in df_diabetes_for_ml.columns.to_list():
-            if col in column_all:
-                columns_with_good.append(column_all)
-        # dataframe with highest features plus diabetic
-    df_good = df_diabetes_for_ml[columns_with_good + ['Diabetic']]
-        # separating all features from the target one
-    X = df_good.loc[:, df_good.columns != 'Diabetic']
-    y = df_good['Diabetic']
-        # splitting X and y in train and test df
-    X_train, X_test, y_train, y_test = sp(X,y, test_size=0.20, random_state=0)
-
-    # Support Vector Machine Classifier
-    model_svc = SVC()
-    model_svc.fit(X_train, y_train)
-    y_pred_svc = model_svc.predict(X_test)
-
-    accuracy_svc_good = accuracy_score(y_test, y_pred_svc)
-
-    # K-nearest Neighbors 
-    model_knc = KNC()
-    model_knc.fit(X_train, y_train)
-    y_pred_knc = model_knc.predict(X_test)
-
-    accuracy_knc_good = accuracy_score(y_test, y_pred_knc)
-
-    # Random Forest
-    model_rf = RF()
-    model_rf.fit(X_train, y_train)
-    y_pred_rf = model_rf.predict(X_test)
-
-    accuracy_rf_good = accuracy_score(y_test, y_pred_rf)
-
-    # creating dataframe creating all results
-    result_features = {'Algorithm': ['Support Vector', 'K-nearest Neighbors', 'Random Forest'], 'Accuracy Results All':[accuracy_svc_all, accuracy_knc_all, accuracy_rf_all], 
-                        'Accuracy Results Features Highest Correlation': [accuracy_svc_highest, accuracy_knc_highest, accuracy_rf_highest], 'Accuracy Results Features Highest Correlation Plus Good':[accuracy_svc_good, accuracy_knc_good, accuracy_rf_good]}
-
-    df_results = pd.DataFrame.from_dict(result_features)
-
-    st.table(df_results)
-
-    st.write("From the data above, it can be seen that algorthms trained with only the features with highest correlation have the worst results, but algorithms trained with that features plus the ones " +
-            "with a good correlation have similar result to that trained with all features. In particulat, it can be noticed that, considering only K-nearest "
-            "neighbors, the algorithm trained with the portion of the features ('highest correlation plus good') have a better score than the one trained with all features.")
-
-    st.write("It can be useful understand what are the features that better predict diabetes: to do so, it's possible to rank the features using *permutation_importance* function from th *inspection* module of scikit-learn.t")
-
-
-    list_of_algorithms = ['Support Vector Machine', 'K-nearest Neighbors', 'Random Forest']
-    algorithm = st.selectbox('Choose an algorithm to see the features rank', list_of_algorithms)
-    if algorithm == 'Support Vector Machine':
-        plotting_rank_features(svc_cols_indexes, svc_imp_indexes)
-    if algorithm == 'K-nearest Neighbors':
-        plotting_rank_features(knc_cols_indexes, knc_imp_indexes)
-    if algorithm == 'Random Forest':
-        plotting_rank_features(rf_cols_indexes, rf_imp_indexes)

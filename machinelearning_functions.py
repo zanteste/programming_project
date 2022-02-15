@@ -9,6 +9,13 @@ from sklearn.model_selection import train_test_split as sp
 
 
 from sklearn.inspection import permutation_importance
+from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC # support vector machine classifier
+from sklearn.neighbors import KNeighborsClassifier as KNC 
+from sklearn.ensemble import RandomForestClassifier as RF
+
+import time
+
 
 # function to replace null values in the columns BMI, Pregnancies, Pdiabetes and Diabetic
 def replacing_null_values(df_diabetes):
@@ -66,6 +73,7 @@ def dataset_datacleaning(df):
 def text_operation_needed(operation):
     if operation == 'Feature scaling':
         st.write("**Feature scaling** is a method used to normalize the range of independent variables or features of data. In data processing, it is also known as data normalization and is generally performed during the data preprocessing step.")
+        st.write("Below, it's shown how data have changed after *feature scaling* (the first 5 rows of the datasets):")
     if operation == 'One hot encoding':
         st.write("**One hot encoding** is a common way of preprocessing categorical features for machine learning models. Thysi type of encoding creates a new binary feature for each possible category and assigns a value of 1 to the feature of " +
                 "each sample that corresponds to its ordinal category.")
@@ -153,6 +161,38 @@ def rank_features(model, X_train, y_train):
 
     return cols_indexes, imp_indexes
 
+# function to train machine learning algorithms
+# df_type is a string to indicate which dataset is used for training: all features or only that one with features with highest correlation
+def train_machine_learning_algorithm(X, y, algorithm, df_type):
+    if algorithm == 'support_vector':
+        model = SVC()
+    if algorithm == 'k-nearest':
+        model = KNC()
+    if algorithm == 'random':
+        model = RF()
+    
+    X_train, X_test, y_train, y_test = sp(X, y, test_size=0.20, random_state=0)
+
+    start = time.time()
+    model.fit(X_train, y_train)
+    stop = time.time()
+
+    training_time = stop - start
+
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+
+    # ranking indexes (cols_indexes and imp_indexes) are obtained only if we train machine learning algorithm with all features
+    if df_type == 'all':
+        # get indexes for ranking the features
+        cols_indexes, imp_indexes = rank_features(model, X_train, y_train)
+        # returning the accuracy and the indexes for ranking the features
+        return accuracy, training_time, cols_indexes, imp_indexes
+    else:
+        return accuracy, training_time
+    
+
+# function to plot features rank
 def plotting_rank_features(cols_indexes, imp_indexes):
     figure = plt.figure(figsize=(10,10))
     plt.barh(cols_indexes, imp_indexes)
