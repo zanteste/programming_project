@@ -2,7 +2,7 @@
 import pandas as pd
 import streamlit as st
 
-from machinelearning_functions import *
+from Machine_Learning.machinelearning_functions import *
 
 original_dataset = pd.read_csv('data/diabetes_dataset__2019.csv')
 # applying of data cleaning functions to the original dataset

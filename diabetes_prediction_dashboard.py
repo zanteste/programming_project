@@ -4,15 +4,15 @@ from platform import machine
 from re import S
 import streamlit as st
 
-import data_exploration
-import data_analysis
+#import data_exploration
 import machinelearning_algorithm
 import introduction
-
+import Data_Exploration.data_exploration as exploration
+import Data_Analysis.data_analysis as analysis
 pages = {
     "Introduction": introduction, 
-    "Data Exploration": data_exploration,
-    "Data Analysis": data_analysis,
+    "Data Exploration": exploration,
+    "Data Analysis": analysis,
     "Machine Learning Algorithms": machinelearning_algorithm
 }
 

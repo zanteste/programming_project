@@ -1,7 +1,8 @@
 import types
 import pandas as pd
 import matplotlib.pyplot as plt
-from data_analysis_function import *
+from Data_Analysis.data_analysis_function import *
+
 
 original_dataset = pd.read_csv('data/diabetes_dataset__2019.csv')
 # applying of data cleaning functions to the original dataset

@@ -13,7 +13,7 @@ def app():
     st.markdown('- **Data Exploration**, in which the dataset is explored and data cleaning operations are described.')
     st.markdown("- **Data Analysis**, in which the features of the dataset are analyzed to find some correlations between them and to find " +
                 " the main causes of diabetes.")
-    st.markdown("- **Diabetes Prediction**, in which the original dataset is modified in order to be ready for machine learning algorithms and " +
+    st.markdown("- **Machine Learning Algorithms**, in which the original dataset is modified in order to be ready for machine learning algorithms and " +
                 "the result of three different algorithms trained on the available data are shown.")
 
     
