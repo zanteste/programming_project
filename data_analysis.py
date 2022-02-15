@@ -10,7 +10,7 @@ df_diabetes = dataset_datacleaning(original_dataset)
 def app():
 
         st.title('Data Analysis')
-        st.write('After expoliring and cleaning the original dataset, the work continued with some data analysis with the following goals:')
+        st.write('After exploring and cleaning the original dataset, the work continued with some data analysis with the following goals:')
         st.markdown('- analyze every features of the dataset and the possible correlations between them; ')
         st.markdown('- analyze the main causes of diabetes;')
 
@@ -20,8 +20,8 @@ def app():
 
         st.write('The type of the columns and the kind of values have been considered during data anlysis, in order to better analyse each feature of the dataset.' +
                 ' There are three different types of columns in the dataset: ' + text_types_of_col_in_dataframe + '.')
-        st.write('All columns of type *object* can be considered as **categorical** features, while columns of type **float64** and **int64** are numerical features. ' +
-                'The column *Pregnancies* (type *float64*) during the all data analysis process is considered as a categorical variable since it admits only 5 values: from 0 to 5.')
+        st.write("All columns of type 'object' can be considered as **categorical** features, while columns of type **float64** and **int64** are numerical features. " +
+                "The column *Pregnancies* (type 'float64') during the all data analysis process is considered as a categorical variable since it admits only 5 values: from 0 to 5.")
 
         # ---------------------- Analysis of alla features and interesting correlation
         st.header('Analysis of all features and interesting correlations')

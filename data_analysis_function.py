@@ -324,12 +324,11 @@ def create_correlation_plot(choosen_correlation, df):
 def correlations_with_target(category_list, df):
     # only the columns in the category_list + the feature target
     df_category = df[category_list + ['Diabetic']]
-    
     colors_based_on_value = color_sequence_for_graph('Diabetic')
     if len(category_list) == 4:
         fig, axes = plt.subplots(nrows=1, ncols=4, figsize=(16,8))
         for j, i in enumerate(category_list):
-            if df_category[i].dtype == 'object':
+            if (df_category[i].dtype == 'category' )| (df_category[i].dtype == 'object'):
                 df_perc = groupby_to_have_percentage_for_categories(i, 'Diabetic', df_category)
                 df_perc = custom_order_based_on_values_two_col(i, 'Diabetic', df_perc)
                 g = sns.barplot(data=df_perc, x=i, y='Participants percentage', hue='Diabetic', palette = colors_based_on_value, ax=axes.flat[j])
@@ -339,7 +338,7 @@ def correlations_with_target(category_list, df):
                     for item in g.get_xticklabels():
                         item.set_rotation(20)
             else:
-                g = sns.violinplot(x='Diabetic',y=i, data=df_category, palette = colors_based_on_value, ax=axes.flat[j])
+                g = sns.violinplot(df_category['Diabetic'],df_category[i], palette = colors_based_on_value, ax=axes.flat[j])
                 g.set_xlabel('')
                 g.set_title('Diabetic correlation with ' + i, fontsize=8)
         st.pyplot(fig)
