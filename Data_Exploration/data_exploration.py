@@ -96,7 +96,7 @@ def app():
         choosen_column = st.selectbox('', columns_for_data_cleaning)
         list_of_original_values = df_diabetes_no_datacleaning[choosen_column].value_counts().index.to_list()
         list_of_values_after_data_cleaning = df_diabetes[choosen_column].value_counts().index.to_list()
-        st.write('In the original dataset, the *' + choosen_column + '* had the following values: ')
+        st.write('In the original dataset, the column *' + choosen_column + '* had the following values: ')
         for val in list_of_original_values:
             st.markdown('- ' + str(val))
         if choosen_column == 'RegularMedicine':

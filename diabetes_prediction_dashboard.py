@@ -17,6 +17,7 @@ pages = {
 }
 
 st.sidebar.title('Diabetes Prediction App')
+st.sidebar.write('*Stefano Zantedeschi*')
 selection = st.sidebar.radio("Go to", list(pages.keys()))
 page = pages[selection]
 page.app()
