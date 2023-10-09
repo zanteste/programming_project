@@ -281,9 +281,8 @@ def create_correlation_plot(choosen_correlation, df):
         col1 = choosen_correlation.split(" with ")[0]
         col2 = choosen_correlation.split(" with ")[1]
 
-        print(df.info())
 
-        if ((df[col2].dtype != 'object')):
+        if (df[col2].dtype != 'object'):
             df = custom_order_based_on_values_one_col(col1, df)
             colors_based_on_value = color_sequence_for_graph(col1)
             fig = plt.figure(figsize=(10,6))
@@ -330,7 +329,7 @@ def correlations_with_target(category_list, df):
     if len(category_list) == 4:
         fig, axes = plt.subplots(nrows=1, ncols=4, figsize=(16,8))
         for j, i in enumerate(category_list):
-            if  (df_category[i].dtype == 'object'):
+            if  (df_category[i].dtype == 'object') | (df_category[i].dtype == 'category'):
                 df_perc = groupby_to_have_percentage_for_categories(i, 'Diabetic', df_category)
                 df_perc = custom_order_based_on_values_two_col(i, 'Diabetic', df_perc)
                 g = sns.barplot(data=df_perc, x=i, y='Participants percentage', hue='Diabetic', palette = colors_based_on_value, ax=axes.flat[j])
